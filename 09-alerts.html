@@ -1,0 +1,623 @@
+```html
+<!DOCTYPE html>
+<html lang="en" ng-app="alertsApp">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Food Connect — 09 · Alerts</title>
+
+<link rel="stylesheet"
+      href="style.css">
+<link rel="stylesheet" href="enhance.css">
+
+<script src="access.js"></script>
+
+<!-- AngularJS -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+
+</head>
+
+
+<body ng-controller="AlertsController">
+
+
+<div class="phone">
+
+<div class="screen">
+
+
+<div class="content page-pad">
+
+
+<!-- =========================================
+     HEADER
+========================================= -->
+
+<div class="brand-row">
+
+    <div class="brand">
+
+        <span class="check">
+            ✓
+        </span>
+
+        Food Connect
+
+    </div>
+
+
+    <div class="avatar"></div>
+
+</div>
+
+
+<h1 class="hero"
+    style="font-size:20px;">
+
+    Alerts
+
+</h1>
+
+
+<p class="sub"
+   style="margin-bottom:16px;">
+
+    Live updates from the AI matching engine
+    and your Food Connect activities.
+
+    <strong>
+        {{ unreadCount() | number }}
+    </strong>
+
+    unread.
+
+</p>
+
+
+<!-- =========================================
+     CATEGORY FILTERS
+========================================= -->
+
+<div class="filter-tabs">
+
+
+    <!-- ALL -->
+
+    <div class="filter-tab"
+         ng-class="{active: category === 'All'}"
+         ng-click="category = 'All'">
+
+        All
+
+    </div>
+
+
+    <!-- MATCHES -->
+
+    <div class="filter-tab"
+         ng-class="{active: category === 'AI Match'}"
+         ng-click="category = 'AI Match'">
+
+        Matches
+
+    </div>
+
+
+    <!-- SYSTEM -->
+
+    <div class="filter-tab"
+         ng-class="{active: category === 'System'}"
+         ng-click="category = 'System'">
+
+        System
+
+    </div>
+
+
+</div>
+
+
+<!-- =========================================
+     SEARCH
+========================================= -->
+
+<div class="field"
+     style="margin-bottom:12px;">
+
+    <input
+
+        type="text"
+
+        ng-model="searchText"
+
+        placeholder="🔍 Search alerts..."
+
+    >
+
+</div>
+
+
+<!-- =========================================
+     LOADING
+========================================= -->
+
+<div ng-if="loading"
+     style="
+        text-align:center;
+        padding:20px;
+        color:#777;
+        font-size:12px;
+     ">
+
+    🔄 Loading alerts...
+
+</div>
+
+
+<!-- =========================================
+     ERROR
+========================================= -->
+
+<div ng-if="errorMessage"
+     style="
+        background:#fff0f0;
+        color:#b00020;
+        border-radius:12px;
+        padding:14px;
+        margin-bottom:12px;
+        font-size:12px;
+     ">
+
+    <strong>
+        Unable to load alerts
+    </strong>
+
+    <p style="margin:6px 0 0;">
+        {{ errorMessage }}
+    </p>
+
+</div>
+
+
+<!-- =========================================
+     ALERT LIST
+========================================= -->
+
+<div
+
+    class="alert-item"
+
+    ng-repeat="
+        alert in alerts
+        | filter:{category: category === 'All' ? '' : category}
+        | filter:searchText
+        | orderBy:'-time'
+    "
+
+>
+
+
+    <!-- ALERT ICON -->
+
+    <div
+
+        class="alert-icon"
+
+        ng-class="alert.type"
+
+    >
+
+        {{ alert.icon }}
+
+    </div>
+
+
+    <!-- ALERT CONTENT -->
+
+    <div class="alert-body">
+
+
+        <div class="alert-title">
+
+            {{ alert.title | uppercase }}
+
+        </div>
+
+
+        <div class="alert-text">
+
+            {{ alert.text }}
+
+        </div>
+
+
+        <div class="alert-time">
+
+            {{ formatTime(alert.time) }}
+
+        </div>
+
+
+    </div>
+
+
+    <!-- UNREAD -->
+
+    <span
+
+        class="unread-dot"
+
+        ng-if="!alert.read"
+
+    ></span>
+
+
+    <!-- DISMISS -->
+
+    <button
+
+        type="button"
+
+        class="delete-btn"
+
+        ng-click="dismissAlert(alert.id)"
+
+        title="Dismiss"
+
+    >
+
+        ✕
+
+    </button>
+
+
+</div>
+
+
+<!-- =========================================
+     NO ALERTS
+========================================= -->
+
+<p
+
+    ng-if="
+        !loading &&
+        (
+            alerts
+            | filter:{category: category === 'All' ? '' : category}
+            | filter:searchText
+        ).length === 0
+    "
+
+    style="
+        text-align:center;
+        font-size:11px;
+        color:#999;
+        padding:20px 0;
+    "
+
+>
+
+    🔔 No alerts available.
+
+</p>
+
+
+<!-- =========================================
+     REFRESH
+========================================= -->
+
+<button
+
+    class="btn-primary"
+
+    style="
+        width:100%;
+        margin-top:10px;
+    "
+
+    ng-click="loadAlerts()"
+
+>
+
+    ↻ Refresh Alerts
+
+</button>
+
+
+</div>
+
+
+<!-- =========================================
+     BOTTOM NAVIGATION
+========================================= -->
+
+<nav class="bottom-nav"></nav>
+
+
+</div>
+
+</div>
+
+
+<!-- =========================================
+     ANGULARJS
+========================================= -->
+
+<script>
+
+
+var app =
+    angular.module(
+        "alertsApp",
+        []
+    );
+
+
+
+/* ==========================================
+   CONTROLLER
+========================================== */
+
+app.controller(
+    "AlertsController",
+
+    function ($scope, $http) {
+
+
+        // ==================================
+        // VARIABLES
+        // ==================================
+
+        $scope.alerts = [];
+
+        $scope.category = "All";
+
+        $scope.searchText = "";
+
+        $scope.loading = true;
+
+        $scope.errorMessage = "";
+
+
+        // ==================================
+        // LOAD ALERTS
+        // ==================================
+
+        $scope.loadAlerts = function () {
+
+
+            $scope.loading = true;
+
+            $scope.errorMessage = "";
+
+
+            $http.get(
+                "http://localhost:5000/api/alerts"
+            )
+
+
+            .then(
+                function (response) {
+
+
+                    console.log(
+                        "Alerts API Response:",
+                        response.data
+                    );
+
+
+                    if (
+                        response.data.success
+                    ) {
+
+
+                        $scope.alerts =
+                            response.data.alerts ||
+                            [];
+
+
+                    }
+
+                    else {
+
+
+                        $scope.errorMessage =
+                            response.data.message ||
+                            "Failed to load alerts";
+
+
+                    }
+
+
+                    $scope.loading = false;
+
+
+                },
+
+
+                function (error) {
+
+
+                    console.error(
+                        "Alerts API Error:",
+                        error
+                    );
+
+
+                    $scope.errorMessage =
+                        "Cannot connect to the Food Connect backend. Make sure the server is running on port 5000.";
+
+
+                    $scope.loading = false;
+
+
+                }
+            );
+
+        };
+
+
+        // ==================================
+        // UNREAD COUNT
+        // ==================================
+
+        $scope.unreadCount =
+            function () {
+
+
+                return $scope.alerts.filter(
+
+                    function (alert) {
+
+                        return !alert.read;
+
+                    }
+
+                ).length;
+
+
+            };
+
+
+        // ==================================
+        // DISMISS ALERT
+        // ==================================
+
+        $scope.dismissAlert =
+            function (id) {
+
+
+                $scope.alerts =
+                    $scope.alerts.filter(
+
+                        function (alert) {
+
+                            return alert.id !== id;
+
+                        }
+
+                    );
+
+
+            };
+
+
+        // ==================================
+        // FORMAT DATE / TIME
+        // ==================================
+
+        $scope.formatTime =
+            function (time) {
+
+
+                if (!time) {
+
+                    return "";
+
+                }
+
+
+                var date =
+                    new Date(time);
+
+
+                if (
+                    isNaN(
+                        date.getTime()
+                    )
+                ) {
+
+                    return time;
+
+                }
+
+
+                var now =
+                    new Date();
+
+
+                var difference =
+                    now.getTime() -
+                    date.getTime();
+
+
+                var minutes =
+                    Math.floor(
+                        difference /
+                        (1000 * 60)
+                    );
+
+
+                if (minutes < 1) {
+
+                    return "Just now";
+
+                }
+
+
+                if (minutes < 60) {
+
+                    return minutes +
+                           " min ago";
+
+                }
+
+
+                var hours =
+                    Math.floor(
+                        minutes / 60
+                    );
+
+
+                if (hours < 24) {
+
+                    return hours +
+                           " hr ago";
+
+                }
+
+
+                var days =
+                    Math.floor(
+                        hours / 24
+                    );
+
+
+                if (days === 1) {
+
+                    return "Yesterday";
+
+                }
+
+
+                return days +
+                       " days ago";
+
+            };
+
+
+        // ==================================
+        // LOAD WHEN PAGE OPENS
+        // ==================================
+
+        $scope.loadAlerts();
+
+
+    }
+
+);
+
+</script>
+
+
+<script src="enhance.js"></script>
+</body>
+
+</html>
+```

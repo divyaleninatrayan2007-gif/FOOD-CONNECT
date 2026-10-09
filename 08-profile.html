@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Food Connect — Profile</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="enhance.css">
+<script src="access.js"></script>
+</head>
+<body>
+<div class="phone">
+  <div class="screen">
+    <div class="content page-pad profile-clean">
+      <div class="brand-row">
+        <div class="brand"><span class="check">✓</span> Food Connect</div>
+        <a href="04-home.html" class="back-btn">←</a>
+      </div>
+
+      <div class="profile-header clean-profile-header">
+        <div class="profile-avatar" id="profileAvatar">?</div>
+        <div class="profile-name" id="profileName">Profile</div>
+        <div class="profile-role" id="profileRole"></div>
+      </div>
+
+      <div class="profile-details" id="profileDetails"></div>
+      <div class="profile-section" id="roleDetails"></div>
+
+      <button class="logout-btn" onclick="logoutUser()">Log Out</button>
+    </div>
+    <nav class="bottom-nav"></nav>
+  </div>
+</div>
+
+<script>
+const user = JSON.parse(localStorage.getItem("rescueUser") || "null") || {};
+const role = rescueGetRole() || user.role || "";
+const volunteer = JSON.parse(localStorage.getItem("volunteerProfile") || "null");
+const ngo = JSON.parse(localStorage.getItem("ngoProfile") || "null");
+const details = document.getElementById("profileDetails");
+const roleDetails = document.getElementById("roleDetails");
+
+document.getElementById("profileName").textContent = user.name || (ngo && ngo.orgName) || "Profile";
+document.getElementById("profileRole").textContent = rescueRoleLabel(role);
+document.getElementById("profileAvatar").textContent =
+  (user.name || (ngo && ngo.orgName) || "?").charAt(0).toUpperCase();
+
+function row(label, value) {
+  if (value === undefined || value === null || value === "") return "";
+  return '<div class="profile-detail-row"><span>' + label + '</span><strong>' + value + '</strong></div>';
+}
+
+let html = row("Name", user.name) + row("Email", user.email);
+if (role === "volunteer" && volunteer) {
+  html += row("Phone", volunteer.phone) + row("Vehicle", volunteer.vehicle) +
+          row("Base Address", volunteer.address) +
+          row("Travel Distance", volunteer.maxDistance ? volunteer.maxDistance + " miles" : "") +
+          row("Availability", (volunteer.availability || []).join(", "));
+}
+if (role === "ngo" && ngo) {
+  html += row("Organization", ngo.orgName) + row("Type", ngo.orgType) +
+          row("Registration Number", ngo.orgRegNumber) + row("Contact", ngo.orgContactName) +
+          row("Phone", ngo.orgPhone) + row("Email", ngo.orgEmail) +
+          row("Capacity", ngo.orgCapacity) + row("Address", ngo.orgAddress) +
+          row("Mission", ngo.orgMission);
+}
+details.innerHTML = html || '<div class="empty-profile">No profile details have been entered yet.</div>';
+
+function logoutUser() {
+  localStorage.removeItem("loggedInUser");
+  rescueClearSession();
+  window.location.href = "02-login.html";
+}
+</script>
+<script src="enhance.js"></script>
+</body>
+</html>

@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Food Connect - Sign Up</title>
+
+    <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="enhance.css">
+
+</head>
+
+<body>
+
+<div class="phone">
+
+    <div class="screen">
+
+        <div class="content">
+
+
+            <!-- =========================
+                 HEADER
+            ========================== -->
+
+            <div class="auth-banner">
+
+                <div class="brand">
+
+                    <span class="check">
+                        ✓
+                    </span>
+
+                    Food Connect
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================
+                 SIGN UP CARD
+            ========================== -->
+
+            <div class="auth-card">
+
+
+                <div class="form-title">
+                    Create your account
+                </div>
+
+
+                <div class="form-subtitle">
+                    Create an account to join the Food Connect food rescue network.
+                </div>
+
+
+                <!-- FULL NAME -->
+
+                <div class="field">
+
+                    <label>
+                        Full Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="signupName"
+                        placeholder="Sarah Mitchell"
+                    >
+
+                </div>
+
+
+                <!-- EMAIL -->
+
+                <div class="field">
+
+                    <label>
+                        Email Address
+                    </label>
+
+                    <input
+                        type="email"
+                        id="signupEmail"
+                        placeholder="sarah@example.com"
+                    >
+
+                </div>
+
+
+                <!-- PASSWORD -->
+
+                <div class="field">
+
+                    <label>
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="signupPassword"
+                        placeholder="Create a password"
+                    >
+
+                </div>
+
+
+                <!-- CONFIRM PASSWORD -->
+
+                <div class="field">
+
+                    <label>
+                        Confirm Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        placeholder="Confirm your password"
+                    >
+
+                </div>
+
+
+                <!-- ROLE -->
+
+                <label class="role-label">
+                    I am signing up as
+                </label>
+
+                <div class="role-select-row" id="roleSelectRow">
+
+                    <div class="role-chip" data-role="donor">
+                        <span class="ric">🎁</span>
+                        Donor
+                    </div>
+
+                    <div class="role-chip" data-role="volunteer">
+                        <span class="ric">🚗</span>
+                        Volunteer
+                    </div>
+
+                    <div class="role-chip" data-role="ngo">
+                        <span class="ric">🏛️</span>
+                        NGO
+                    </div>
+
+                </div>
+
+
+                <!-- TERMS -->
+
+                <div class="check-row">
+
+                    <input
+                        type="checkbox"
+                        id="terms"
+                    >
+
+                    <span>
+
+                        I agree to the
+
+                        <a href="#">
+                            Terms of Service
+                        </a>
+
+                        and
+
+                        <a href="#">
+                            Privacy Policy
+                        </a>
+
+                    </span>
+
+                </div>
+
+
+                <!-- CREATE ACCOUNT -->
+
+                <button
+                    type="button"
+                    class="btn-primary"
+                    onclick="createAccount()"
+                >
+                    Create Account
+                </button>
+
+
+                <!-- LOGIN -->
+
+                <div class="link-row">
+
+                    Already have an account?
+
+                    <a href="02-login.html">
+                        Log In
+                    </a>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     JAVASCRIPT
+========================= -->
+
+<script src="access.js"></script>
+<script>
+
+/* =========================
+   ROLE CHIP SELECTION
+========================== */
+
+let selectedRole = null;
+
+document.querySelectorAll(".role-chip").forEach(function (chip) {
+    chip.addEventListener("click", function () {
+        document.querySelectorAll(".role-chip").forEach(function (c) {
+            c.classList.remove("selected");
+        });
+        chip.classList.add("selected");
+        selectedRole = chip.getAttribute("data-role");
+    });
+});
+
+
+function createAccount() {
+
+
+    const name =
+        document
+        .getElementById("signupName")
+        .value
+        .trim();
+
+
+    const email =
+        document
+        .getElementById("signupEmail")
+        .value
+        .trim();
+
+
+    const password =
+        document
+        .getElementById("signupPassword")
+        .value;
+
+
+    const confirmPassword =
+        document
+        .getElementById("confirmPassword")
+        .value;
+
+
+    const terms =
+        document
+        .getElementById("terms")
+        .checked;
+
+
+    /* =========================
+       NAME VALIDATION
+    ========================== */
+
+    if (name === "") {
+
+        alert("Please enter your full name.");
+
+        return;
+    }
+
+
+    /* =========================
+       EMAIL VALIDATION
+    ========================== */
+
+    if (email === "") {
+
+        alert("Please enter your email address.");
+
+        return;
+    }
+
+
+    /* =========================
+       PASSWORD VALIDATION
+    ========================== */
+
+    if (password === "") {
+
+        alert("Please create a password.");
+
+        return;
+    }
+
+
+    if (password.length < 6) {
+
+        alert(
+            "Password must contain at least 6 characters."
+        );
+
+        return;
+    }
+
+
+    /* =========================
+       CONFIRM PASSWORD
+    ========================== */
+
+    if (confirmPassword === "") {
+
+        alert(
+            "Please confirm your password."
+        );
+
+        return;
+    }
+
+
+    if (password !== confirmPassword) {
+
+        alert(
+            "Passwords do not match."
+        );
+
+        return;
+    }
+
+
+    /* =========================
+       ROLE VALIDATION
+    ========================== */
+
+    if (!selectedRole) {
+
+        alert(
+            "Please choose whether you're signing up as a Donor, Volunteer, or NGO."
+        );
+
+        return;
+    }
+
+
+    /* =========================
+       TERMS
+    ========================== */
+
+    if (!terms) {
+
+        alert(
+            "Please agree to the Terms of Service and Privacy Policy."
+        );
+
+        return;
+    }
+
+
+    /* =========================
+       SAVE USER ACCOUNT
+    ========================== */
+
+    const user = {
+
+        name: name,
+
+        email: email,
+
+        password: password,
+
+        role: selectedRole
+
+    };
+
+
+    localStorage.setItem(
+        "rescueUser",
+        JSON.stringify(user)
+    );
+
+
+    /* =========================
+       SUCCESS
+    ========================== */
+
+    alert(
+        "Account created successfully! Please login."
+    );
+
+
+    /* =========================
+       GO TO LOGIN PAGE
+    ========================== */
+
+    window.location.href =
+        "02-login.html";
+
+}
+
+</script>
+
+
+<script src="enhance.js"></script>
+</body>
+
+</html>

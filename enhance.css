@@ -1,0 +1,107 @@
+/* =========================================================
+   FOOD CONNECT — FRONTEND ENHANCEMENTS
+   Bold typography · animations · space-filling panels · map
+========================================================= */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800;900&display=swap");
+
+:root {
+    --fc-green: #2e7d32;
+    --fc-dark: #1b5e20;
+    --fc-lime: #8bc34a;
+    --fc-orange: #ff9800;
+}
+
+/* ---------- BOLD LETTERS ---------- */
+body, input, select, textarea, button {
+    font-family: "Poppins", Arial, Helvetica, sans-serif;
+}
+body { font-weight: 600; }
+p, small, span, label, a, li, td, th, input, select, textarea, button, div { font-weight: 700; }
+h1, h2, h3, h4, .brand, .splash-title, .profile-name, .pickup-title, .step-title, .section-head h3 { font-weight: 900 !important; }
+input::placeholder, textarea::placeholder { font-weight: 600; }
+
+/* ---------- ANIMATED BACKGROUND ---------- */
+body::before, body::after {
+    content: "";
+    position: fixed;
+    border-radius: 50%;
+    z-index: -1;
+    filter: blur(60px);
+    opacity: .45;
+    animation: fcBlob 14s ease-in-out infinite alternate;
+}
+body::before { width: 340px; height: 340px; background: #a5d6a7; top: -80px; left: -80px; }
+body::after  { width: 300px; height: 300px; background: #ffe0b2; bottom: -80px; right: -60px; animation-delay: -6s; }
+@keyframes fcBlob { to { transform: translate(120px, 90px) scale(1.25); } }
+
+/* ---------- PAGE ENTRANCE ---------- */
+.phone { animation: fcPhoneIn .7s cubic-bezier(.2,.9,.3,1.1) both; }
+@keyframes fcPhoneIn { from { opacity: 0; transform: translateY(30px) scale(.96); } }
+body.fc-leaving .phone { animation: fcPhoneOut .28s ease forwards; }
+@keyframes fcPhoneOut { to { opacity: 0; transform: translateY(-14px) scale(.98); } }
+
+.fc-reveal { opacity: 0; transform: translateY(18px); }
+.fc-reveal.fc-in { animation: fcUp .6s cubic-bezier(.2,.8,.3,1) forwards; animation-delay: var(--fc-d, 0s); }
+@keyframes fcUp { to { opacity: 1; transform: none; } }
+
+/* ---------- CARDS / BUTTONS ---------- */
+.pickup-card, .profile-detail-row, .driver-card, [class*="role-card"], [class*="-card"]:not(.fc-nolift) {
+    transition: transform .25s ease, box-shadow .25s ease;
+}
+.pickup-card:hover, .driver-card:hover, [class*="role-card"]:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 26px rgba(46,125,50,.22);
+}
+button, .btn-primary, .btn-light, .accept-btn { position: relative; overflow: hidden; transition: transform .15s ease, box-shadow .25s ease; }
+button:hover, .btn-primary:hover, .btn-light:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(46,125,50,.28); }
+button:active, .btn-primary:active { transform: scale(.96); }
+.btn-primary::after, .accept-btn::after {
+    content: ""; position: absolute; top: 0; left: -80%; width: 50%; height: 100%;
+    background: linear-gradient(100deg, transparent, rgba(255,255,255,.45), transparent);
+    transform: skewX(-20deg); animation: fcShine 3.2s ease-in-out infinite;
+}
+@keyframes fcShine { 0%, 60% { left: -80%; } 100% { left: 140%; } }
+.profile-avatar, .driver-avatar { animation: fcPulse 2.6s ease-in-out infinite; }
+@keyframes fcPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(46,125,50,.45); } 50% { box-shadow: 0 0 0 14px rgba(46,125,50,0); } }
+.bottom-nav .nav-item.active .ic { animation: fcBounce 1.6s ease-in-out infinite; }
+@keyframes fcBounce { 50% { transform: translateY(-4px); } }
+input:focus, select:focus, textarea:focus { transform: scale(1.01); transition: transform .2s; }
+
+/* ---------- SPACE-FILLING PANEL ---------- */
+.fc-fill { margin: 18px 0 8px; padding: 16px; border-radius: 20px; position: relative; overflow: hidden;
+    background: linear-gradient(135deg, #e8f5e9, #fff8e1); border: 2px solid #c8e6c9; }
+.fc-fill h4 { color: var(--fc-dark); font-size: 14px; margin-bottom: 12px; }
+.fc-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+.fc-stat { background: #fff; border-radius: 14px; padding: 10px 4px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,.06); }
+.fc-stat b { display: block; font-size: 20px; font-weight: 900; color: var(--fc-green); }
+.fc-stat small { font-size: 10px; color: #555; font-weight: 800; }
+.fc-tip { background: #fff; border-radius: 14px; padding: 12px; font-size: 12px; line-height: 1.5; color: #333; min-height: 58px; animation: fcUp .5s ease both; }
+.fc-float { position: absolute; font-size: 22px; opacity: .55; animation: fcFloat 5s ease-in-out infinite; }
+@keyframes fcFloat { 50% { transform: translateY(-14px) rotate(12deg); } }
+
+/* ---------- GOOGLE MAP (volunteer tracking) ---------- */
+.fc-map-wrap { margin-bottom: 14px; border-radius: 20px; overflow: hidden; border: 3px solid #fff; box-shadow: 0 8px 22px rgba(0,0,0,.2); position: relative; }
+.fc-map { width: 100%; height: 215px; background: #e0e0e0; }
+.fc-map iframe { width: 100%; height: 100%; border: 0; display: block; }
+.fc-map-chip { position: absolute; left: 10px; top: 10px; z-index: 5; background: #fff; border-radius: 20px; padding: 6px 12px; font-size: 11px; font-weight: 800;
+    box-shadow: 0 4px 12px rgba(0,0,0,.25); display: flex; align-items: center; gap: 6px; }
+.fc-live-dot { width: 9px; height: 9px; border-radius: 50%; background: #e53935; animation: fcLive 1.2s infinite; }
+@keyframes fcLive { 0% { box-shadow: 0 0 0 0 rgba(229,57,53,.7); } 100% { box-shadow: 0 0 0 10px rgba(229,57,53,0); } }
+.fc-map-actions { display: flex; gap: 8px; margin-bottom: 14px; }
+.fc-map-actions a { flex: 1; text-align: center; text-decoration: none; padding: 10px 6px; border-radius: 12px; font-size: 12px; font-weight: 800;
+    background: var(--fc-green); color: #fff; transition: transform .15s; }
+.fc-map-actions a.alt { background: #fff; color: var(--fc-green); border: 2px solid var(--fc-green); }
+.fc-map-actions a:hover { transform: translateY(-2px); }
+.fc-eta-row { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 14px; }
+.fc-eta-row div { flex: 1; background: #e8f5e9; border-radius: 12px; padding: 8px; text-align: center; font-size: 11px; font-weight: 800; color: var(--fc-dark); }
+.fc-eta-row b { display: block; font-size: 16px; font-weight: 900; }
+
+/* ---------- NGO → Donor → Volunteer flow panels ---------- */
+.fc-flow { margin-top: 14px; }
+.fc-flow-item { background: #fff; border: 2px solid #c8e6c9; border-radius: 16px; padding: 12px; margin-bottom: 10px; font-size: 12px; line-height: 1.6; color: #222; animation: fcUp .5s ease both; }
+.fc-flow-item small { color: #555; font-weight: 800; }
+.fc-flow-btn { display: block; margin-top: 8px; text-align: center; text-decoration: none; background: var(--fc-green); color: #fff; padding: 9px; border-radius: 12px; font-size: 12px; font-weight: 800; }
+.fc-flow-msgs { background: #fff8e1; border: 2px solid #ffe082; border-radius: 14px; padding: 10px; margin-bottom: 10px; font-size: 11px; line-height: 1.6; }
+.fc-flow-msgs div + div { margin-top: 4px; border-top: 1px dashed #ffe082; padding-top: 4px; }
+.fc-banner { background: #e8f5e9; border: 2px solid var(--fc-green); border-radius: 14px; padding: 10px 12px; margin-bottom: 14px; font-size: 12px; line-height: 1.6; color: var(--fc-dark); }
+.fc-free { color: #2e7d32; font-weight: 800; font-size: 11px; margin: 6px 0; }

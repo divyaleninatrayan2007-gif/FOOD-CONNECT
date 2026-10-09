@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Food Connect — Volunteer Profile</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="enhance.css">
+<script src="access.js"></script>
+</head>
+<body>
+<div class="phone">
+  <div class="screen">
+    <div class="content page-pad profile-clean">
+      <div class="brand-row">
+        <a href="08-profile.html" class="back-btn">←</a>
+        <div class="brand" style="font-size:16px;">Volunteer Profile</div>
+        <div></div>
+      </div>
+      <div class="profile-header clean-profile-header">
+        <div class="profile-avatar" id="volAvatar">?</div>
+        <div class="profile-name" id="volNameDisplay"></div>
+        <div class="profile-role">VOLUNTEER</div>
+      </div>
+      <div class="profile-details" id="volDetails"></div>
+      <button class="btn-primary" id="editVolunteer" style="width:100%; margin-top:16px;">Edit Details</button>
+      <form id="volunteerEditForm" class="profile-edit-form" style="display:none; margin-top:16px;">
+        <div class="field"><label>Full Name</label><input id="volName" type="text"></div>
+        <div class="field"><label>Phone Number</label><input id="volPhone" type="tel"></div>
+        <div class="field"><label>Vehicle Type</label><select id="volVehicle"><option>Car</option><option>Van</option><option>Bike</option><option>On Foot</option></select></div>
+        <div class="field"><label>Base Address</label><input id="volAddress" type="text"></div>
+        <div class="field"><label>Max Travel Distance (miles)</label><input id="volMaxDistance" type="number" min="1"></div>
+        <div class="field"><label>Availability</label><input id="volAvailability" type="text"></div>
+        <button class="btn-primary" type="submit">Save Details</button>
+      </form>
+    </div>
+    <nav class="bottom-nav"></nav>
+  </div>
+</div>
+<script>
+let profile = JSON.parse(localStorage.getItem("volunteerProfile") || "null") || {};
+function render() {
+  const name = profile.name || "";
+  document.getElementById("volNameDisplay").textContent = name;
+  document.getElementById("volAvatar").textContent = (name || "?").charAt(0).toUpperCase();
+  const rows = [
+    ["Name", profile.name], ["Phone", profile.phone], ["Vehicle", profile.vehicle],
+    ["Base Address", profile.address],
+    ["Travel Distance", profile.maxDistance ? profile.maxDistance + " miles" : ""],
+    ["Availability", (profile.availability || []).join(", ")]
+  ].filter(x => x[1]);
+  document.getElementById("volDetails").innerHTML = rows.map(x =>
+    '<div class="profile-detail-row"><span>'+x[0]+'</span><strong>'+x[1]+'</strong></div>'
+  ).join("") || '<div class="empty-profile">No volunteer details have been entered yet.</div>';
+}
+function fillForm() {
+  volName.value=profile.name||""; volPhone.value=profile.phone||""; volVehicle.value=profile.vehicle||"Car";
+  volAddress.value=profile.address||""; volMaxDistance.value=profile.maxDistance||"";
+  volAvailability.value=(profile.availability||[]).join(", ");
+}
+document.getElementById("editVolunteer").onclick=()=>{fillForm(); volunteerEditForm.style.display="block";};
+document.getElementById("volunteerEditForm").onsubmit=(e)=>{
+  e.preventDefault();
+  profile={name:volName.value.trim(),phone:volPhone.value.trim(),vehicle:volVehicle.value,address:volAddress.value.trim(),
+    maxDistance:Number(volMaxDistance.value)||"",availability:volAvailability.value.split(",").map(x=>x.trim()).filter(Boolean)};
+  localStorage.setItem("volunteerProfile",JSON.stringify(profile));
+  rescueSetSession("volunteer",profile.name);
+  volunteerEditForm.style.display="none"; render();
+};
+render();
+</script>
+<script src="enhance.js"></script>
+</body>
+</html>

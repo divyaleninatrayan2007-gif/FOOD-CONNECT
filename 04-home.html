@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Food Connect - Home</title>
+
+    <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="enhance.css">
+<script src="access.js"></script>
+<script src="fcflow.js"></script>
+
+</head>
+
+
+<body>
+
+<div class="phone">
+
+    <div class="screen">
+
+
+        <div class="content home-content">
+
+
+            <!-- =========================
+                 HEADER
+            ========================== -->
+
+            <div class="brand-row">
+
+                <div class="brand">
+
+                    <span class="check">
+                        ✓
+                    </span>
+
+                    Food Connect
+
+                </div>
+
+
+                <a
+                    href="09-alerts.html"
+                    class="notif-btn"
+                >
+                    🔔
+                </a>
+
+            </div>
+
+
+
+            <!-- =========================
+                 GREETING
+            ========================== -->
+
+            <div class="home-hero">
+
+              <div class="greeting-row">
+
+                <div>
+
+                    <div
+                        class="greeting-hi"
+                        id="userGreeting"
+                    >
+                        Hello, Maha 👋
+                    </div>
+
+                    <div class="greeting-sub">
+                        Here's your impact so far
+                    </div>
+
+                    <div class="profile-role" id="homeRoleBadge" style="margin-top:8px;">
+                        🎁 Donor
+                    </div>
+
+                </div>
+
+              </div>
+
+              <div class="home-hero-art">
+                  <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="100" cy="100" r="96" fill="#eaf5ee"/>
+                      <path d="M55 120 Q100 90 145 120 L137 165 Q100 182 63 165 Z" fill="#1f6f4d"/>
+                      <path d="M55 120 Q100 108 145 120 L142 130 Q100 118 58 130 Z" fill="#14432f"/>
+                      <circle cx="78" cy="82" r="17" fill="#e2a13d"/>
+                      <circle cx="112" cy="70" r="13" fill="#f4c876"/>
+                      <path d="M75 68 Q80 56 90 60" stroke="#14432f" stroke-width="3" fill="none" stroke-linecap="round"/>
+                      <path d="M40 60 C 70 34, 130 34, 160 60" stroke="#d8cfa8" stroke-width="3" fill="none" stroke-dasharray="1.5 8" stroke-linecap="round"/>
+                      <circle cx="160" cy="60" r="5" fill="#e2a13d"/>
+                      <circle cx="40" cy="60" r="5" fill="#1f6f4d"/>
+                  </svg>
+              </div>
+
+            </div>
+
+
+
+            <!-- =========================
+                 STATISTICS
+            ========================== -->
+
+            <div class="stat-pair">
+
+
+                <div class="stat-box">
+
+                    <div class="stat-ic">
+                        🍽️
+                    </div>
+
+                    <div class="num">
+                        1,240
+                    </div>
+
+                    <div class="lbl">
+                        Meals Rescued
+                    </div>
+
+                </div>
+
+
+
+                <div class="stat-box">
+
+                    <div class="stat-ic">
+                        🌍
+                    </div>
+
+                    <div class="num">
+                        8,450
+                    </div>
+
+                    <div class="lbl">
+                        kg CO₂ Saved
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =========================
+                 ROLE SECTION
+            ========================== -->
+
+            <div class="section-head">
+
+                <h3>
+                    What would you like to do?
+                </h3>
+
+            </div>
+
+
+
+            <div class="role-home-grid" id="roleHomeGrid"></div>
+
+            </div>
+
+
+
+        <!-- =========================
+             BOTTOM NAVIGATION
+        ========================== -->
+
+        <nav class="bottom-nav"></nav>
+
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================
+     USER NAME
+========================= -->
+
+<script>
+
+const savedUser =
+    JSON.parse(
+        localStorage.getItem("rescueUser")
+    );
+
+
+if (savedUser && savedUser.name) {
+
+    document.getElementById(
+        "userGreeting"
+    ).textContent =
+        "Hello, " +
+        savedUser.name +
+        " 👋";
+
+}
+
+
+/* =========================
+   ONLY THE SIGNED-IN ROLE
+========================== */
+const currentRole = rescueGetRole();
+const roleBadge = document.getElementById("homeRoleBadge");
+const roleGrid = document.getElementById("roleHomeGrid");
+
+const roleActions = {
+    donor: { icon:"🎁", title:"Donate Food", text:"Share your surplus food", href:"05-donate.html" },
+    volunteer: { icon:"🚗", title:"Find Pickups", text:"Help collect rescued food", href:"10-request-pickup.html" },
+    ngo: { icon:"🏛️", title:"Request Food", text:"Tell us what your community needs", href:"13-ngo-request-food.html" },
+    admin: { icon:"🛡️", title:"Manage Food Connect", text:"Open the rescue network", href:"09-alerts.html" }
+};
+
+if (roleBadge && currentRole) roleBadge.textContent = rescueRoleLabel(currentRole);
+if (roleGrid && roleActions[currentRole]) {
+    const item = roleActions[currentRole];
+    roleGrid.innerHTML =
+        '<a class="home-role-card role-only-card" href="' + item.href + '">' +
+        '<div class="home-role-icon">' + item.icon + '</div>' +
+        '<div class="home-role-title">' + item.title + '</div>' +
+        '<div class="home-role-text">' + item.text + '</div><span class="role-arrow">→</span></a>';
+}
+
+</script>
+
+
+<script>FC.homePanel(rescueGetRole());</script>
+<script src="enhance.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="pickupApp">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Food Connect — 10 · Request Pickup</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="enhance.css">
+<script src="access.js"></script>
+<script src="fcflow.js"></script>
+
+<!-- AngularJS -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+</head>
+<body ng-controller="PickupController">
+
+<div class="phone">
+  <div class="screen">
+    <div class="content page-pad">
+
+      <div class="brand-row">
+        <a href="04-home.html" class="back-btn">←</a>
+        <div class="brand" style="font-size:16px;">Available Pickups</div>
+        <div class="avatar"></div>
+      </div>
+
+      <div class="scan-bar" id="volunteerBaseBar">
+        <span class="scan-dot"></span>
+        Loading your volunteer profile...
+      </div>
+
+      <p class="sub" style="margin-bottom:14px;">
+        The AI has queued {{ pickups.length | number }} missions near you, ranked by distance from your base address.
+      </p>
+
+      <!-- TWO-WAY BOUND SEARCH -> feeds Angular's built-in `filter` filter -->
+      <div class="field" style="margin-bottom:12px;">
+        <input
+          type="text"
+          ng-model="searchText"
+          placeholder="🔍 Filter missions by name or route...">
+      </div>
+
+      <!-- CUSTOM DIRECTIVE: <pickup-card> — one element per mission,
+           ng-repeat feeds each item into the directive's isolate scope -->
+      <pickup-card
+        ng-repeat="p in pickups | orderBy:'distance' | filter:searchText"
+        pickup="p">
+      </pickup-card>
+
+      <p ng-if="(pickups | filter:searchText).length === 0"
+         style="text-align:center; font-size:11px; color:#999; padding:16px 0;">
+        No missions match that search.
+      </p>
+
+    </div>
+
+    <nav class="bottom-nav"></nav>
+  </div>
+</div>
+
+<!-- =========================================
+     ANGULARJS — CUSTOM DIRECTIVE DEMO
+========================================= -->
+
+<script>
+
+var app = angular.module("pickupApp", []);
+
+
+/* =====================================================
+   DISTANCE HELPER
+   Prototype-only "AI distance engine": since there's no
+   real geocoding here, we derive a stable, address-specific
+   distance value from the donor's address text so the same
+   donation always shows the same distance for this volunteer.
+===================================================== */
+
+function pseudoDistanceMiles(addressText) {
+
+    var hash = 0;
+
+    for (var i = 0; i < addressText.length; i++) {
+        hash = (hash * 31 + addressText.charCodeAt(i)) >>> 0;
+    }
+
+    return Number((0.8 + (hash % 400) / 100).toFixed(1));
+
+}
+
+
+/* =====================================================
+   CONTROLLER
+===================================================== */
+
+app.controller("PickupController", function ($scope) {
+
+    $scope.searchText = "";
+
+    const volunteerProfile =
+        JSON.parse(localStorage.getItem("volunteerProfile") || "null");
+
+    /* No profile yet — send the volunteer to set one up first,
+       so distance can actually be calculated against a base address. */
+    if (!volunteerProfile) {
+        window.location.href = "15-volunteer-profile.html";
+        return;
+    }
+
+    const baseBar = document.getElementById("volunteerBaseBar");
+    if (baseBar) {
+        baseBar.innerHTML =
+            '<span class="scan-dot"></span>' +
+            '🚗 ' + volunteerProfile.name + ' · ' + volunteerProfile.vehicle +
+            ' · Within ' + volunteerProfile.maxDistance + ' mi of ' + volunteerProfile.address;
+    }
+
+
+    /* ---- Demo missions (always shown, so the prototype never
+       looks empty) ---- */
+
+    const demoPickups = [
+        {
+            title: "Grocery Surplus Recovery",
+            route: "Whole Foods → St. Jude Shelter",
+            urgency: "high",
+            urgencyLabel: "High Urgency",
+            distance: 1.4,
+            pickupBy: "6:30 PM",
+            weight: 15,
+            address: "Whole Foods, Green District",
+            accepted: false
+        },
+        {
+            title: "Bakery Surplus Pickup",
+            route: "Le Pain Quotidien → Hope Kitchen",
+            urgency: "medium",
+            urgencyLabel: "Medium Urgency",
+            distance: 2.1,
+            pickupBy: "8:00 PM",
+            weight: 9,
+            address: "Le Pain Quotidien, Downtown",
+            accepted: false
+        },
+        {
+            title: "Farmers Market Donation",
+            route: "Union Square → Green Relief Network",
+            urgency: "medium",
+            urgencyLabel: "Medium Urgency",
+            distance: 3.6,
+            pickupBy: "7:15 PM",
+            weight: 22,
+            address: "Union Square Farmers Market",
+            accepted: false
+        }
+    ];
+
+
+    /* ---- Real missions — pulled from donations actually
+       submitted on the Donate page (05-donate.html), still
+       pending and not yet accepted by another volunteer ---- */
+
+    const rescueDonations =
+        JSON.parse(localStorage.getItem("rescueDonations") || "[]");
+
+    const vFree = function (d) { return FC.volunteerFree(volunteerProfile.availability, d.wantedDate, d.wantedTime); };
+
+    const donationPickups = rescueDonations
+        .filter(function (d) { return d.status === "pending" && (!d.ngoName || vFree(d)); })
+        .map(function (d) {
+            const distance = pseudoDistanceMiles(d.address || d.foodType || "donation");
+            const forNgo = !!d.ngoName;
+            return {
+                title: d.foodType + " Donation",
+                route: forNgo ? d.address + " → " + d.ngoName : d.address + " → Awaiting NGO Match",
+                urgency: Number(d.quantity) > 15 ? "high" : "medium",
+                urgencyLabel: Number(d.quantity) > 15 ? "High Urgency" : "Medium Urgency",
+                distance: distance,
+                pickupBy: forNgo ? FC.fmtDate(d.wantedDate) + " " + d.wantedTime : (d.expiryTime || "Flexible"),
+                weight: Number(d.quantity) || 0,
+                address: d.address,
+                donationId: d.id,
+                forNgo: forNgo,
+                ngoName: d.ngoName,
+                ngoAddress: d.ngoAddress,
+                requestId: d.requestId,
+                accepted: false
+            };
+        });
+    /* ---- Merge + limit to the volunteer's travel radius ---- */
+
+    $scope.pickups = (donationPickups.length ? donationPickups : demoPickups)
+        .filter(function (p) {
+            return p.forNgo || p.distance <= volunteerProfile.maxDistance;
+        });
+
+});
+
+
+/* =====================================================
+   CUSTOM DIRECTIVE — <pickup-card>
+   restrict: 'E'  -> usable as an HTML element <pickup-card>
+   scope: { pickup: '=' } -> ISOLATE scope with a two-way
+   bound "pickup" attribute, so changes made inside the
+   directive (like accepting a mission) update the exact
+   same object living in the parent controller's array.
+===================================================== */
+
+app.directive("pickupCard", function () {
+
+    return {
+        restrict: "E",
+        scope: {
+            pickup: "="
+        },
+        template:
+            '<div class="pickup-card">' +
+            '  <div class="pickup-top">' +
+            '    <div>' +
+            '      <div class="pickup-title">{{ pickup.title }}</div>' +
+            '      <div class="pickup-route">{{ pickup.route }}</div>' +
+            '    </div>' +
+            '    <span class="pickup-tag" ng-class="pickup.urgency">{{ pickup.urgencyLabel | uppercase }}</span>' +
+            '  </div>' +
+            '  <div class="pickup-meta-row">' +
+            '    <span>📍 {{ pickup.distance | number:1 }} mi</span>' +
+            '    <span>⏱️ Pickup by {{ pickup.pickupBy }}</span>' +
+            '    <span>📦 {{ pickup.weight | number }} kg</span>' +
+            '  </div>' +
+            '  <div class="fc-free" ng-if="pickup.forNgo">✅ You are free that day · deliver to {{ pickup.ngoName }}</div>' +
+            '  <button ' +
+            '    class="accept-btn" ' +
+            '    ng-class="{accepted: pickup.accepted}" ' +
+            '    ng-click="accept()" ' +
+            '    ng-disabled="pickup.accepted">' +
+            '    {{ pickup.accepted ? \'Mission Accepted ✓\' : \'Accept & Pick Up\' }}' +
+            '  </button>' +
+            '</div>',
+        link: function (scope) {
+
+            /* ng-click target inside the directive's own scope */
+            scope.accept = function () {
+
+                scope.pickup.accepted = true;
+
+                const volunteerProfile =
+                    JSON.parse(localStorage.getItem("volunteerProfile") || "null");
+
+                /* If this mission came from a real donation, mark it
+                   accepted in shared storage so it drops off the list
+                   for other volunteers and the donor sees its status. */
+                if (scope.pickup.donationId) {
+
+                    const rescueDonations =
+                        JSON.parse(localStorage.getItem("rescueDonations") || "[]");
+
+                    const match = rescueDonations.find(function (d) {
+                        return d.id === scope.pickup.donationId;
+                    });
+
+                    if (match) {
+                        match.status = "accepted";
+                        match.volunteerName = volunteerProfile ? volunteerProfile.name : "Volunteer";
+                        match.status = "picked";
+                    }
+
+                    localStorage.setItem("rescueDonations", JSON.stringify(rescueDonations));
+                }
+
+                /* Hand off to Track Delivery with the details of the
+                   mission this volunteer just picked up. */
+                localStorage.setItem("activeMission", JSON.stringify({
+                    title: scope.pickup.title,
+                    route: scope.pickup.route,
+                    address: scope.pickup.address,
+                    pickupBy: scope.pickup.pickupBy,
+                    weight: scope.pickup.weight,
+                    distance: scope.pickup.distance,
+                    volunteerName: volunteerProfile ? volunteerProfile.name : "Volunteer",
+                    donationId: scope.pickup.donationId,
+                    requestId: scope.pickup.requestId,
+                    ngoName: scope.pickup.ngoName,
+                    ngoAddress: scope.pickup.ngoAddress
+                }));
+                if (scope.pickup.requestId) {
+                    const vn = volunteerProfile ? volunteerProfile.name : "A volunteer";
+                    FC.updateRequest(scope.pickup.requestId, { status: "picked", volunteerName: vn });
+                    FC.notify("ngo", "🚗 " + vn + " accepted the delivery of " + scope.pickup.title + " and is collecting it now.");
+                    FC.notify("donor", "🚗 " + vn + " is coming to pick up your food at " + scope.pickup.address + ".");
+                }
+
+                setTimeout(function () {
+                    window.location.href = "11-track-delivery.html";
+                }, 700);
+            };
+        }
+    };
+
+});
+
+</script>
+
+<script src="enhance.js"></script>
+</body>
+</html>

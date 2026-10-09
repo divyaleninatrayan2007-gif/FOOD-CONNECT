@@ -1,0 +1,676 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>AI Matches - Food Connect</title>
+
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="enhance.css">
+
+<style>
+
+.admin-page {
+    min-height: 100vh;
+    padding: 25px;
+}
+
+.admin-container {
+    max-width: 1100px;
+    margin: auto;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.header-icon {
+    font-size: 38px;
+}
+
+.header-title h1 {
+    margin: 0;
+    font-size: 26px;
+}
+
+.header-title p {
+    margin: 5px 0 0;
+    color: #777;
+    font-size: 14px;
+}
+
+.back-button {
+    border: none;
+    padding: 11px 17px;
+    border-radius: 9px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.summary-card {
+    background: white;
+    padding: 22px;
+    border-radius: 16px;
+    margin-bottom: 22px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.07);
+}
+
+.summary-number {
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.summary-label {
+    color: #777;
+    margin-left: 8px;
+}
+
+.match-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.match-card {
+    background: white;
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: 0 6px 22px rgba(0,0,0,0.08);
+}
+
+.match-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 18px;
+}
+
+.match-icon {
+    font-size: 34px;
+}
+
+.ngo-name {
+    font-size: 19px;
+    font-weight: 700;
+    margin-top: 5px;
+}
+
+.match-status {
+    background: #e8f7ed;
+    color: #18733a;
+    padding: 7px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.match-section {
+    border-radius: 12px;
+    padding: 14px;
+    margin-top: 12px;
+    background: #f8fafc;
+}
+
+.match-section-title {
+    font-size: 13px;
+    color: #777;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.match-section-value {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 9px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}
+
+.detail-label {
+    color: #777;
+}
+
+.detail-value {
+    font-weight: 600;
+    text-align: right;
+}
+
+.match-score {
+    margin-top: 15px;
+    padding: 14px;
+    border-radius: 12px;
+    text-align: center;
+    background: #eef5ff;
+}
+
+.score-number {
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.score-label {
+    display: block;
+    color: #777;
+    font-size: 12px;
+    margin-top: 2px;
+}
+
+.message-box {
+    background: white;
+    padding: 35px;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+}
+
+.message-icon {
+    font-size: 42px;
+    margin-bottom: 10px;
+}
+
+.error {
+    color: #b42318;
+}
+
+@media (max-width: 750px) {
+
+    .match-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .admin-page {
+        padding: 15px;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    .detail-row {
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    .detail-value {
+        text-align: left;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="admin-page">
+
+<div class="admin-container">
+
+
+<!-- HEADER -->
+
+<div class="page-header">
+
+    <div class="header-left">
+
+        <div class="header-icon">
+            🤖
+        </div>
+
+        <div class="header-title">
+
+            <h1>
+                AI Smart Matches
+            </h1>
+
+            <p>
+                Monitor successful food matches
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <button
+        class="back-button"
+        onclick="goBack()"
+    >
+        ← Dashboard
+    </button>
+
+</div>
+
+
+<!-- SUMMARY -->
+
+<div class="summary-card">
+
+    <span
+        class="summary-number"
+        id="matchCount"
+    >
+        0
+    </span>
+
+    <span class="summary-label">
+        Successful Matches
+    </span>
+
+</div>
+
+
+<!-- MATCHES -->
+
+<div
+    id="matchGrid"
+    class="match-grid"
+>
+
+    <div class="message-box">
+
+        <div class="message-icon">
+            ⏳
+        </div>
+
+        Loading matches...
+
+    </div>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<script>
+
+
+let allMatches = [];
+
+
+// ==========================================
+// LOAD MATCHES
+// ==========================================
+
+async function loadMatches() {
+
+    const grid =
+        document.getElementById(
+            "matchGrid"
+        );
+
+
+    try {
+
+        const response =
+            await fetch(
+                "http://localhost:5000/api/admin/matches"
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok || !data.success) {
+
+            throw new Error(
+                data.message ||
+                "Failed to load matches"
+            );
+
+        }
+
+
+        allMatches =
+            data.matches || [];
+
+
+        document.getElementById(
+            "matchCount"
+        ).textContent =
+            allMatches.length;
+
+
+        displayMatches(
+            allMatches
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Match Loading Error:",
+            error
+        );
+
+
+        grid.innerHTML = `
+
+            <div class="message-box">
+
+                <div class="message-icon">
+                    ❌
+                </div>
+
+                <div class="error">
+                    Failed to load matches
+                </div>
+
+                <p>
+                    ${escapeHTML(
+                        error.message
+                    )}
+                </p>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+// ==========================================
+// DISPLAY MATCHES
+// ==========================================
+
+function displayMatches(matches) {
+
+    const grid =
+        document.getElementById(
+            "matchGrid"
+        );
+
+
+    if (matches.length === 0) {
+
+        grid.innerHTML = `
+
+            <div class="message-box">
+
+                <div class="message-icon">
+                    🤖
+                </div>
+
+                <strong>
+                    No successful matches yet
+                </strong>
+
+                <p>
+                    AI matches will appear here
+                    after an NGO accepts a food match.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    grid.innerHTML = "";
+
+
+    matches.forEach(
+        function(request) {
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "match-card";
+
+
+            card.innerHTML = `
+
+                <div class="match-header">
+
+                    <div>
+
+                        <div class="match-icon">
+                            🤝
+                        </div>
+
+                        <div class="ngo-name">
+
+                            ${escapeHTML(
+                                request.ngoName
+                            )}
+
+                        </div>
+
+                    </div>
+
+
+                    <span class="match-status">
+
+                        ✓ Matched
+
+                    </span>
+
+                </div>
+
+
+                <!-- REQUEST -->
+
+                <div class="match-section">
+
+                    <div class="match-section-title">
+
+                        NGO FOOD REQUEST
+
+                    </div>
+
+                    <div class="match-section-value">
+
+                        ${escapeHTML(
+                            request.foodType
+                        )}
+
+                    </div>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        🍱 Category
+                    </span>
+
+                    <span class="detail-value">
+
+                        ${escapeHTML(
+                            request.category
+                        )}
+
+                    </span>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        ⚖️ Quantity
+                    </span>
+
+                    <span class="detail-value">
+
+                        ${request.quantity} kg
+
+                    </span>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        👥 People
+                    </span>
+
+                    <span class="detail-value">
+
+                        ${request.peopleCount}
+
+                    </span>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        📍 NGO Address
+                    </span>
+
+                    <span class="detail-value">
+
+                        ${escapeHTML(
+                            request.address
+                        )}
+
+                    </span>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        🚨 Urgency
+                    </span>
+
+                    <span class="detail-value">
+
+                        ${escapeHTML(
+                            request.urgency || "Normal"
+                        )}
+
+                    </span>
+
+                </div>
+
+
+                <div class="match-score">
+
+                    <div class="score-number">
+                        ✓
+                    </div>
+
+                    <span class="score-label">
+                        Food request successfully matched
+                    </span>
+
+                </div>
+
+            `;
+
+
+            grid.appendChild(card);
+
+        }
+    );
+
+}
+
+
+// ==========================================
+// ESCAPE HTML
+// ==========================================
+
+function escapeHTML(value) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+// ==========================================
+// BACK
+// ==========================================
+
+function goBack() {
+
+    window.location.href =
+        "18-admin-dashboard.html";
+
+}
+
+
+// ==========================================
+// START
+// ==========================================
+
+loadMatches();
+
+</script>
+
+
+<script src="enhance.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Food Connect — 11 · Track Delivery</title>
+
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="enhance.css">
+<script src="access.js"></script>
+</head>
+
+<body>
+
+<script>
+/* =========================================
+   LOGIN PROTECTION
+   ========================================= */
+
+const loggedInUser =
+    localStorage.getItem("loggedInUser");
+
+if (!loggedInUser) {
+
+    alert("Please log in to continue.");
+
+    window.location.href = "02-login.html";
+}
+</script>
+
+
+<div class="phone">
+  <div class="screen">
+
+    <div class="content page-pad">
+
+      <!-- ================================
+           HEADER
+           ================================ -->
+
+      <div class="brand-row">
+
+        <a href="04-home.html" class="back-btn">
+          ←
+        </a>
+
+        <div class="brand" style="font-size:16px;">
+          Track Mission
+        </div>
+
+        <div class="avatar"></div>
+
+      </div>
+
+
+      <!-- ================================
+           TRACKING STATUS
+           ================================ -->
+
+      <div
+        class="tracking-status-bar"
+        id="trackStatusBar"
+      >
+        🚗 Grocery Surplus Recovery — In Progress
+      </div>
+
+
+      <!-- ================================
+           MAP
+           ================================ -->
+
+      <div class="fc-map-wrap">
+        <div class="fc-map-chip"><span class="fc-live-dot"></span><span id="trackMapChip">🚗 Locating route…</span></div>
+        <div class="fc-map" id="fcMap"></div>
+      </div>
+
+      <div class="fc-eta-row">
+        <div><b id="fcEta">…</b>ETA</div>
+        <div><b id="fcDist">…</b>Distance</div>
+        <div><b id="fcGps">GPS…</b>Tracking</div>
+      </div>
+
+      <div class="fc-map-actions">
+        <a id="fcOpenMaps" href="#" target="_blank" rel="noopener">🧭 Navigate in Google Maps</a>
+        <a class="alt" href="#" onclick="location.reload();return false;">🔄 Refresh</a>
+      </div>
+
+
+
+      <!-- ================================
+           DRIVER CARD
+           ================================ -->
+
+      <div class="driver-card">
+
+        <div
+          class="driver-avatar"
+          id="trackDriverAvatar"
+        >
+          D
+        </div>
+
+        <div class="driver-info">
+
+          <div
+            class="driver-name"
+            id="trackDriverName"
+          >
+            Daniel R.
+          </div>
+
+          <div
+            class="driver-sub"
+            id="trackDriverSub"
+          >
+            Volunteer · 4.8★ · Honda Civic
+          </div>
+
+        </div>
+
+        <div class="driver-actions">
+
+          <a
+            href="#"
+            class="icon-btn"
+          >
+            📞
+          </a>
+
+          <a
+            href="#"
+            class="icon-btn"
+          >
+            💬
+          </a>
+
+        </div>
+
+      </div>
+
+
+      <!-- ================================
+           MISSION TIMELINE
+           ================================ -->
+
+      <div class="section-head">
+        <h3>Mission Timeline</h3>
+      </div>
+
+
+      <div class="progress-track">
+
+
+        <!-- STEP 1 -->
+
+        <div class="progress-step done">
+
+          <div class="step-dot">
+            ✓
+          </div>
+
+          <div class="step-body">
+
+            <div class="step-title">
+              Mission accepted
+            </div>
+
+            <div
+              class="step-time"
+              id="trackAcceptedTime"
+            >
+              6:02 PM · Daniel R.
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- STEP 2 -->
+
+        <div class="progress-step done">
+
+          <div class="step-dot">
+            ✓
+          </div>
+
+          <div class="step-body">
+
+            <div
+              class="step-title"
+              id="trackArrivedTitle"
+            >
+              Arrived at Whole Foods
+            </div>
+
+            <div class="step-time">
+              6:14 PM
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- STEP 3 -->
+
+        <div class="progress-step active">
+
+          <div class="step-dot">
+            ●
+          </div>
+
+          <div class="step-body">
+
+            <div
+              class="step-title"
+              id="trackEnRouteTitle"
+            >
+              En route to St. Jude Shelter
+            </div>
+
+            <div
+              class="step-time"
+              id="trackEta"
+            >
+              ETA 6:30 PM
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- STEP 4 -->
+
+        <div class="progress-step pending">
+
+          <div class="step-dot">
+            4
+          </div>
+
+          <div class="step-body">
+
+            <div class="step-title">
+              Delivered &amp; confirmed
+            </div>
+
+            <div class="step-time">
+              Pending
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ================================
+           BACK TO PROFILE
+           ================================ -->
+
+      <button class="btn-primary" id="markDelivered" style="width:100%; margin-bottom:10px; display:none;">
+        ✅ Mark as Delivered to NGO
+      </button>
+
+      <a
+        href="08-profile.html"
+        style="text-decoration:none;"
+      >
+
+        <button
+          class="btn-primary"
+          style="width:100%;"
+        >
+          Back to Profile
+        </button>
+
+      </a>
+
+    </div>
+
+
+    <!-- ================================
+         BOTTOM NAVIGATION
+         ================================ -->
+
+    <nav class="bottom-nav"></nav>
+
+  </div>
+</div>
+
+
+<script>
+
+/* =========================================
+   PERSONALIZE FROM ACTIVE MISSION
+   ========================================= */
+
+const activeMission =
+    JSON.parse(
+        localStorage.getItem("activeMission") || "null"
+    );
+
+
+if (activeMission) {
+
+
+    /* Tracking status */
+
+    document.getElementById(
+        "trackStatusBar"
+    ).textContent =
+        "🚗 " +
+        activeMission.title +
+        " — In Progress";
+
+
+    /* Map information */
+
+    document.getElementById(
+        "trackMapChip"
+    ).textContent =
+        "🚗 Heading to " +
+        (
+            activeMission.address ||
+            "pickup address"
+        );
+
+
+    /* Volunteer name */
+
+    const firstName =
+        (
+            activeMission.volunteerName ||
+            "Volunteer"
+        ).split(" ")[0];
+
+
+    /* Volunteer initial */
+
+    const initial =
+        firstName
+            .charAt(0)
+            .toUpperCase();
+
+
+    document.getElementById(
+        "trackDriverAvatar"
+    ).textContent = initial;
+
+
+    /* Volunteer full name */
+
+    document.getElementById(
+        "trackDriverName"
+    ).textContent =
+        activeMission.volunteerName ||
+        "Volunteer";
+
+
+    /* Volunteer information */
+
+    document.getElementById(
+        "trackDriverSub"
+    ).textContent =
+        "Volunteer · " +
+        (activeMission.weight || 0) +
+        " kg · " +
+        (activeMission.distance || 0) +
+        " mi away";
+
+
+    /* Accepted time */
+
+    document.getElementById(
+        "trackAcceptedTime"
+    ).textContent =
+        "Just now · " +
+        (
+            activeMission.volunteerName ||
+            "Volunteer"
+        );
+
+
+    /* Pickup location */
+
+    document.getElementById(
+        "trackArrivedTitle"
+    ).textContent =
+        "Arrived at " +
+        (
+            activeMission.address ||
+            "pickup address"
+        );
+
+
+    /* En route status */
+
+    document.getElementById(
+        "trackEnRouteTitle"
+    ).textContent =
+        "En route to " + (activeMission.ngoName || "drop-off");
+
+
+    /* Pickup time */
+
+    document.getElementById(
+        "trackEta"
+    ).textContent =
+        "Pickup by " +
+        (
+            activeMission.pickupBy ||
+            "soon"
+        );
+
+}
+
+</script>
+
+<script src="fcflow.js"></script>
+<script src="config.js"></script>
+<script src="maps.js"></script>
+<script>
+(function () {
+    var m = JSON.parse(localStorage.getItem("activeMission") || "null") || {};
+    var v = JSON.parse(localStorage.getItem("volunteerProfile") || "null") || {};
+    FCTracker.init({
+        container: "fcMap",
+        origin: v.address || "",
+        destination: m.address || "Whole Foods Market"
+    });
+})();
+</script>
+<script>
+(function () {
+    var m = JSON.parse(localStorage.getItem("activeMission") || "null");
+    var btn = document.getElementById("markDelivered");
+    if (!m || !m.ngoName || !btn) return;
+    btn.style.display = "block";
+    btn.onclick = function () {
+        var list = FC.load("rescueDonations");
+        list.forEach(function (d) { if (d.id === m.donationId) d.status = "delivered"; });
+        FC.save("rescueDonations", list);
+        if (m.requestId) FC.updateRequest(m.requestId, { status: "delivered" });
+        FC.notify("ngo", "✅ " + m.title + " has been delivered to " + m.ngoName + ".");
+        FC.notify("donor", "💚 Your donation reached " + m.ngoName + ". Thank you!");
+        localStorage.removeItem("activeMission");
+        alert("Delivery confirmed. Thank you for volunteering!");
+        window.location.href = "04-home.html";
+    };
+})();
+</script>
+<script src="enhance.js"></script>
+</body>
+</html>

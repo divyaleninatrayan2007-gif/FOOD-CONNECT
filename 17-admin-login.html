@@ -1,0 +1,556 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Admin Login - Food Connect</title>
+
+    <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="enhance.css">
+
+    <style>
+
+        .admin-page {
+
+            min-height: 100vh;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            padding: 25px;
+
+        }
+
+
+        .admin-container {
+
+            width: 100%;
+
+            max-width: 430px;
+
+        }
+
+
+        .admin-header {
+
+            text-align: center;
+
+            margin-bottom: 25px;
+
+        }
+
+
+        .admin-icon {
+
+            font-size: 52px;
+
+            margin-bottom: 10px;
+
+        }
+
+
+        .admin-header h1 {
+
+            font-size: 28px;
+
+            margin-bottom: 8px;
+
+        }
+
+
+        .admin-header p {
+
+            color: #666;
+
+            font-size: 15px;
+
+        }
+
+
+        .admin-card {
+
+            background: white;
+
+            padding: 30px;
+
+            border-radius: 18px;
+
+            box-shadow:
+                0 10px 35px
+                rgba(0, 0, 0, 0.10);
+
+        }
+
+
+        .field {
+
+            margin-bottom: 18px;
+
+        }
+
+
+        .field label {
+
+            display: block;
+
+            font-weight: 600;
+
+            margin-bottom: 7px;
+
+            font-size: 14px;
+
+        }
+
+
+        .field input {
+
+            width: 100%;
+
+            padding: 13px;
+
+            border: 1px solid #d5d5d5;
+
+            border-radius: 9px;
+
+            box-sizing: border-box;
+
+            font-size: 15px;
+
+            outline: none;
+
+        }
+
+
+        .field input:focus {
+
+            border-color: #4f46e5;
+
+        }
+
+
+        .login-button {
+
+            width: 100%;
+
+            border: none;
+
+            padding: 14px;
+
+            border-radius: 9px;
+
+            font-size: 16px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+            margin-top: 8px;
+
+        }
+
+
+        .login-button:disabled {
+
+            opacity: 0.6;
+
+            cursor: not-allowed;
+
+        }
+
+
+        .message {
+
+            display: none;
+
+            padding: 12px;
+
+            border-radius: 8px;
+
+            margin-bottom: 18px;
+
+            font-size: 14px;
+
+        }
+
+
+        .error {
+
+            background: #ffe8e8;
+
+            color: #b42318;
+
+        }
+
+
+        .success {
+
+            background: #e8f7ed;
+
+            color: #18733a;
+
+        }
+
+
+        .back-link {
+
+            display: block;
+
+            text-align: center;
+
+            margin-top: 18px;
+
+            font-size: 14px;
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="admin-page">
+
+    <div class="admin-container">
+
+
+        <!-- Header -->
+
+        <div class="admin-header">
+
+            <div class="admin-icon">
+                🛡️
+            </div>
+
+            <h1>
+                Admin Login
+            </h1>
+
+            <p>
+                Food Connect Administration Panel
+            </p>
+
+        </div>
+
+
+        <!-- Login Card -->
+
+        <div class="admin-card">
+
+
+            <!-- Error -->
+
+            <div
+                id="errorMessage"
+                class="message error"
+            ></div>
+
+
+            <!-- Success -->
+
+            <div
+                id="successMessage"
+                class="message success"
+            ></div>
+
+
+            <form id="adminLoginForm">
+
+
+                <!-- Email -->
+
+                <div class="field">
+
+                    <label for="email">
+                        Admin Email
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="Enter admin email"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Password -->
+
+                <div class="field">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Enter admin password"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- Login -->
+
+                <button
+                    type="submit"
+                    id="loginButton"
+                    class="login-button"
+                >
+                    Login as Admin
+                </button>
+
+
+            </form>
+
+
+            <a
+                href="02-login.html"
+                class="back-link"
+            >
+                ← Back to Login
+            </a>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const form =
+    document.getElementById(
+        "adminLoginForm"
+    );
+
+
+const emailInput =
+    document.getElementById(
+        "email"
+    );
+
+
+const passwordInput =
+    document.getElementById(
+        "password"
+    );
+
+
+const loginButton =
+    document.getElementById(
+        "loginButton"
+    );
+
+
+const errorMessage =
+    document.getElementById(
+        "errorMessage"
+    );
+
+
+const successMessage =
+    document.getElementById(
+        "successMessage"
+    );
+
+
+
+function showError(message) {
+
+    errorMessage.textContent =
+        message;
+
+    errorMessage.style.display =
+        "block";
+
+    successMessage.style.display =
+        "none";
+
+}
+
+
+
+function showSuccess(message) {
+
+    successMessage.textContent =
+        message;
+
+    successMessage.style.display =
+        "block";
+
+    errorMessage.style.display =
+        "none";
+
+}
+
+
+
+form.addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+
+        const email =
+            emailInput.value
+                .trim();
+
+
+        const password =
+            passwordInput.value;
+
+
+        if (!email || !password) {
+
+            showError(
+                "Please enter email and password."
+            );
+
+            return;
+
+        }
+
+
+        loginButton.disabled =
+            true;
+
+        loginButton.textContent =
+            "Logging in...";
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "http://localhost:5000/api/admin/login",
+                    {
+
+                        method: "POST",
+
+                        headers: {
+
+                            "Content-Type":
+                                "application/json"
+
+                        },
+
+                        body: JSON.stringify({
+
+                            email: email,
+
+                            password: password
+
+                        })
+
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.message ||
+                    "Admin login failed."
+                );
+
+            }
+
+
+            // Save admin session
+
+            localStorage.setItem(
+                "adminUser",
+                JSON.stringify(
+                    data.admin
+                )
+            );
+
+
+            localStorage.setItem(
+                "loggedInUser",
+                JSON.stringify({
+
+                    name:
+                        data.admin.name,
+
+                    email:
+                        data.admin.email,
+
+                    role:
+                        "admin"
+
+                })
+            );
+
+
+            showSuccess(
+                "Admin login successful! Redirecting..."
+            );
+
+
+            setTimeout(
+                function() {
+
+                    window.location.href =
+                        "18-admin-dashboard.html";
+
+                },
+                800
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Admin Login Error:",
+                error
+            );
+
+
+            showError(
+                error.message ||
+                "Unable to connect to server."
+            );
+
+
+            loginButton.disabled =
+                false;
+
+            loginButton.textContent =
+                "Login as Admin";
+
+        }
+
+    }
+);
+
+</script>
+
+<script src="enhance.js"></script>
+</body>
+
+</html>
+

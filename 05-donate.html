@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="rescueApp">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Food Connect - Donate Food</title>
+
+    <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="enhance.css">
+
+    <script src="access.js"></script>
+<script src="fcflow.js"></script>
+
+    <!-- AngularJS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+
+</head>
+
+
+<body ng-controller="DonateController">
+
+<div class="phone">
+
+<div class="screen">
+
+    <!-- =========================
+         TOP BRAND
+    ========================== -->
+
+    <div class="brand-row">
+
+        <div class="brand">
+            <span class="check">✓</span>
+            Food Connect
+        </div>
+
+        <a href="04-home.html" class="back-btn">
+            ←
+        </a>
+
+    </div>
+
+
+    <!-- =========================
+         CONTENT
+    ========================== -->
+
+    <div class="content donate-page">
+
+        <div class="page-title">
+            Donate Surplus Food
+        </div>
+
+        <div class="page-subtitle">
+            Share your surplus food with the local rescue network.
+        </div>
+
+        <div class="hero-illustration">
+            <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
+                <rect x="40" y="80" width="240" height="100" rx="14" fill="#1f6f4d"/>
+                <rect x="40" y="80" width="240" height="26" rx="8" fill="#14432f"/>
+                <rect x="140" y="60" width="40" height="40" fill="#e2a13d"/>
+                <circle cx="95" cy="70" r="22" fill="#e2a13d"/>
+                <circle cx="95" cy="70" r="22" fill="#e2a13d" opacity="0"/>
+                <circle cx="95" cy="65" r="18" fill="#f4c876"/>
+                <path d="M92 50 Q98 38 110 44" stroke="#14432f" stroke-width="4" fill="none" stroke-linecap="round"/>
+                <circle cx="230" cy="66" r="16" fill="#e2735a"/>
+                <path d="M228 52 Q234 42 244 46" stroke="#14432f" stroke-width="4" fill="none" stroke-linecap="round"/>
+                <rect x="150" y="46" width="26" height="40" rx="4" fill="#fff" stroke="#14432f" stroke-width="3"/>
+            </svg>
+        </div>
+
+
+        <!-- =========================
+             DONATION FORM
+        ========================== -->
+
+        <div class="fc-banner" ng-if="acceptedRequest && !donationSubmitted">
+            🏛️ Accepting request from <b>{{ acceptedRequest.ngoName }}</b>:<br>
+            <b>{{ acceptedRequest.foodName }}</b> ({{ acceptedRequest.category }}) ·
+            📅 {{ acceptedRequest.date }} ⏰ {{ acceptedRequest.time }}<br>
+            Fill in your pickup address below and submit to confirm.
+        </div>
+        <form
+            class="donate-form"
+            ng-submit="saveDonation()"
+            ng-if="!donationSubmitted"
+        >
+
+            <!-- FOOD PHOTO -->
+
+
+            <!-- FOOD TYPE -->
+
+            <div class="field">
+
+                <label>
+                    Food Type
+                </label>
+
+                <input
+                    type="text"
+                    ng-model="donation.foodType"
+                    placeholder="Artisan Veggie Wraps"
+                    required
+                >
+
+            </div>
+
+
+            <!-- CATEGORY -->
+
+            <div class="field">
+
+                <label>
+                    Category
+                </label>
+
+                <select
+                    ng-model="donation.category"
+                    required
+                >
+
+                    <option value="Prepared Meals">
+                        Prepared Meals
+                    </option>
+
+                    <option value="Fresh Produce">
+                        Fresh Produce
+                    </option>
+
+                    <option value="Bakery Items">
+                        Bakery Items
+                    </option>
+
+                    <option value="Dairy">
+                        Dairy
+                    </option>
+
+                    <option value="Canned Goods">
+                        Canned Goods
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- QUANTITY -->
+
+            <div class="field">
+
+                <label>
+                    Quantity
+                </label>
+
+                <input
+                    type="number"
+                    ng-model="donation.quantity"
+                    min="1"
+                    placeholder="15"
+                    required
+                >
+
+                <span class="unit-label">
+                    Units
+                </span>
+
+            </div>
+
+
+            <!-- PREP TIME -->
+
+            <div class="field">
+
+                <label>
+                    Prep Time
+                </label>
+
+                <input
+                    type="text"
+                    ng-model="donation.prepTime"
+                    placeholder="2h ago"
+                    required
+                >
+
+            </div>
+
+
+            <!-- EXPIRY TIME -->
+
+            <div class="field">
+
+                <label>
+                    Expiry Time
+                </label>
+
+                <input
+                    type="text"
+                    ng-model="donation.expiryTime"
+                    placeholder="6h from now"
+                    required
+                >
+
+            </div>
+
+
+            <!-- PICKUP ADDRESS -->
+
+            <div class="field">
+
+                <label>
+                    Pickup Address
+                </label>
+
+                <input
+                    type="text"
+                    ng-model="donation.address"
+                    placeholder="221B Baker Street, Green District"
+                    required
+                >
+
+            </div>
+
+
+            <!-- =========================
+                 PICKUP ZONE
+            ========================== -->
+
+            <div class="map-preview">
+
+                📍 Pickup Zone Identified
+
+            </div>
+
+
+            <!-- =========================
+                 CONFIRMATION BUTTON
+            ========================== -->
+
+            <button
+                type="submit"
+                class="btn-primary confirm-donation-btn"
+                ng-disabled="saving"
+            >
+
+                <span ng-if="!saving">
+                    Confirm Donation 💚
+                </span>
+
+                <span ng-if="saving">
+                    Saving Donation...
+                </span>
+
+            </button>
+
+        </form>
+
+
+        <!-- =========================
+             SUCCESS MESSAGE
+        ========================== -->
+
+        <div
+            class="donation-success"
+            ng-if="donationSubmitted"
+        >
+
+            <div class="success-icon">
+                ✓
+            </div>
+
+            <div class="success-title">
+                Donation Confirmed!
+            </div>
+
+            <div class="success-text">
+                Your donation has been successfully
+                added to the Food Connect network.
+            </div>
+
+            <button
+                type="button"
+                class="btn-primary"
+                ng-click="newDonation()"
+            >
+                Add Another Donation
+            </button>
+
+        </div>
+
+
+        <!-- =========================
+             DONATION RECORDS
+        ========================== -->
+
+        <div
+            class="records-section"
+            ng-if="donations.length > 0"
+        >
+
+            <h3 class="records-title">
+                Donation Records
+            </h3>
+
+
+            <!-- FILTER -->
+
+            <div
+                class="field"
+                style="margin-bottom:10px;"
+            >
+
+                <input
+                    type="text"
+                    ng-model="searchText"
+                    placeholder="🔍 Filter records by food, category..."
+                >
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table class="donation-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Food
+                            </th>
+
+                            <th>
+                                Category
+                            </th>
+
+                            <th>
+                                Qty
+                            </th>
+
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        <tr
+                            ng-repeat="item in donations | filter:searchText track by item._id"
+                        >
+
+                            <td>
+                                {{ item.foodType || item.foodName | uppercase }}
+                            </td>
+
+                            <td>
+                                {{ item.category }}
+                            </td>
+
+                            <td>
+                                {{ item.quantity | number }}
+                            </td>
+
+                            <td>
+
+                                <button
+                                    type="button"
+                                    class="delete-table-btn"
+                                    ng-click="deleteDonation(item)"
+                                >
+                                    Delete
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+
+                        <tr
+                            ng-if="(donations | filter:searchText).length === 0"
+                        >
+
+                            <td
+                                colspan="4"
+                                style="text-align:center; color:#999;"
+                            >
+                                No matching records.
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <div
+                style="font-size:10px; color:#888; margin:8px 0 4px;"
+            >
+
+                Total donations:
+                {{ donations.length | number }}
+
+                ·
+
+                Total quantity:
+                {{ getTotalQuantity() | number }}
+                units
+
+            </div>
+
+
+            <!-- BACK TO HOME -->
+
+            <a
+                href="04-home.html"
+                class="home-button"
+            >
+                ← Back to Home
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         BOTTOM NAVIGATION
+    ========================== -->
+
+    <nav class="bottom-nav"></nav>
+
+</div>
+
+</div>
+
+
+<!-- =========================
+     ANGULARJS
+========================== -->
+
+<script>
+
+var app = angular.module(
+    "rescueApp",
+    []
+);
+
+
+/* =========================================
+   DONATION SERVICE
+   Stores donations in the browser (localStorage)
+   under the shared "rescueDonations" key — the
+   same feed the Volunteer Pickup page reads from.
+   This is a self-contained frontend prototype, so
+   there's no live backend to call here.
+========================================= */
+
+app.service(
+    "DonationService",
+    function ($q) {
+
+        function readAll() {
+            return JSON.parse(
+                localStorage.getItem("rescueDonations") || "[]"
+            );
+        }
+
+        function writeAll(list) {
+            localStorage.setItem(
+                "rescueDonations",
+                JSON.stringify(list)
+            );
+        }
+
+        var rescueUser =
+            JSON.parse(localStorage.getItem("rescueUser") || "null");
+
+        var donorName =
+            (rescueUser && rescueUser.name) || "Verified Donor";
+
+
+        /*
+         * Function 1
+         * Get this donor's own donations
+         */
+
+        this.getDonations = function () {
+
+            var mine = readAll().filter(function (d) {
+                return d.donorName === donorName;
+            });
+
+            return $q.resolve({ data: { donations: mine } });
+
+        };
+
+
+        /*
+         * Function 2
+         * Add a donation to the shared feed
+         */
+
+        this.addDonation = function (donation) {
+
+            var uid = "local-" + Date.now();
+
+            var saved = angular.extend(
+                { id: uid, _id: uid, donorName: donorName, status: "pending" },
+                donation
+            );
+
+            var list = readAll();
+            list.unshift(saved);
+            writeAll(list);
+
+            return $q.resolve({ data: { donation: saved } });
+
+        };
+
+
+        /*
+         * Function 3
+         * Delete a donation from the shared feed
+         */
+
+        this.deleteDonation = function (id) {
+
+            var list = readAll().filter(function (d) {
+                return d._id !== id;
+            });
+
+            writeAll(list);
+
+            return $q.resolve({ data: { success: true } });
+
+        };
+
+    }
+);
+
+
+/* =========================================
+   CONTROLLER
+========================================= */
+
+app.controller(
+    "DonateController",
+    function (
+        $scope,
+        DonationService
+    ) {
+
+
+        /* =====================================
+           INITIAL DONATION
+        ===================================== */
+
+        $scope.donation = {
+
+            foodType:
+                "",
+
+            category:
+                "Prepared Meals",
+
+            quantity:
+                null,
+
+            prepTime:
+                "",
+
+            expiryTime:
+                "",
+
+            address:
+                ""
+
+        };
+
+
+        /* =====================================
+           VARIABLES
+        ===================================== */
+
+        $scope.donations = [];
+        var reqId = new URLSearchParams(location.search).get("request");
+        $scope.acceptedRequest = reqId ? FC.getRequest(reqId) : null;
+        if ($scope.acceptedRequest && $scope.acceptedRequest.status === "open") {
+            $scope.donation.foodType = $scope.acceptedRequest.foodName;
+            $scope.donation.category = $scope.acceptedRequest.category;
+            $scope.donation.quantity = $scope.acceptedRequest.quantity;
+            $scope.donation.expiryTime = $scope.acceptedRequest.date + " " + $scope.acceptedRequest.time;
+        } else { $scope.acceptedRequest = null; }
+
+        $scope.donationSubmitted =
+            false;
+
+        $scope.saving =
+            false;
+
+
+        /* =====================================
+           LOAD THIS DONOR'S EXISTING DONATIONS
+        ===================================== */
+
+        DonationService
+            .getDonations()
+
+            .then(function (response) {
+
+                $scope.donations =
+                    response.data.donations || [];
+
+            });
+
+
+        /* =====================================
+           CONFIRM DONATION
+        ===================================== */
+
+        $scope.saveDonation =
+            function () {
+
+
+                if ($scope.saving) {
+                    return;
+                }
+
+
+                $scope.saving =
+                    true;
+
+
+                /*
+                 * One donation shape, shared everywhere:
+                 * this is what gets saved, what shows up in
+                 * this donor's own Donation Records table, and
+                 * what the Volunteer Pickup page (10-request-pickup.html)
+                 * reads as an available mission.
+                 */
+
+                var donationData = {
+                    ngoName: $scope.acceptedRequest ? $scope.acceptedRequest.ngoName : undefined,
+                    ngoAddress: $scope.acceptedRequest ? $scope.acceptedRequest.ngoAddress : undefined,
+                    requestId: $scope.acceptedRequest ? $scope.acceptedRequest.id : undefined,
+                    wantedDate: $scope.acceptedRequest ? $scope.acceptedRequest.date : undefined,
+                    wantedTime: $scope.acceptedRequest ? $scope.acceptedRequest.time : undefined,
+
+                    foodType:
+                        $scope.donation.foodType,
+
+                    category:
+                        $scope.donation.category,
+
+                    quantity:
+                        Number(
+                            $scope.donation.quantity
+                        ),
+
+                    prepTime:
+                        $scope.donation.prepTime,
+
+                    expiryTime:
+                        $scope.donation.expiryTime,
+
+                    address:
+                        $scope.donation.address,
+
+                    freshness:
+                        "Excellent",
+
+                    priority:
+                        "High",
+
+                    co2Saved:
+                        Number(
+                            (
+                                Number(
+                                    $scope.donation.quantity
+                                ) * 0.28
+                            ).toFixed(1)
+                        )
+
+                };
+
+
+                DonationService
+
+                    .addDonation(
+                        donationData
+                    )
+
+                    .then(function (response) {
+
+                        $scope.donations.unshift(
+                            response.data.donation
+                        );
+
+                        $scope.donationSubmitted =
+                            true;
+
+                        var ar = $scope.acceptedRequest;
+                        if (ar) {
+                            FC.updateRequest(ar.id, { status: "accepted", donorName: FC.me().name || "A donor", donorAddress: donationData.address });
+                            FC.notify("ngo", "🥗 " + (FC.me().name || "A donor") + " accepted your request for " + ar.foodName + " (" + FC.fmtDate(ar.date) + ", " + ar.time + "). A volunteer will deliver it.");
+                            FC.notify("volunteer", "🚗 New pickup: " + ar.foodName + " for " + ar.ngoName + " on " + FC.fmtDate(ar.date) + " at " + ar.time + ".");
+                            alert("Thank you! " + ar.ngoName + " has been notified and volunteers will pick it up from your address.");
+                        } else {
+                            alert("Donation saved successfully!");
+                        }
+
+                    })
+
+                    .catch(function (error) {
+
+                        console.error(
+                            "Donation error:",
+                            error
+                        );
+
+                        alert(
+                            "Failed to save donation. Please try again."
+                        );
+
+                    })
+
+                    .finally(function () {
+
+                        $scope.saving =
+                            false;
+
+                    });
+
+            };
+
+
+        /* =====================================
+           DELETE DONATION
+        ===================================== */
+
+        $scope.deleteDonation =
+            function (item) {
+
+
+                if (
+                    !confirm(
+                        "Delete this donation?"
+                    )
+                ) {
+
+                    return;
+
+                }
+
+
+                DonationService
+
+                    .deleteDonation(
+                        item._id
+                    )
+
+                    .then(function (response) {
+
+
+                        console.log(
+                            "Delete response:",
+                            response.data
+                        );
+
+
+                        var index =
+                            $scope.donations.indexOf(
+                                item
+                            );
+
+
+                        if (index > -1) {
+
+                            $scope.donations.splice(
+                                index,
+                                1
+                            );
+
+                        }
+
+                        /* DonationService.deleteDonation() already
+                           removed this record from the shared
+                           "rescueDonations" feed, so it also drops
+                           off the Volunteer Pickup page automatically. */
+
+                        alert(
+                            "Donation deleted successfully!"
+                        );
+
+                    })
+
+                    .catch(function (error) {
+
+                        console.error(
+                            "Delete error:",
+                            error
+                        );
+
+
+                        alert(
+                            "Failed to delete donation."
+                        );
+
+                    });
+
+            };
+
+
+        /* =====================================
+           NEW DONATION
+        ===================================== */
+
+        $scope.newDonation =
+            function () {
+
+
+                $scope.donation = {
+
+                    foodType: "",
+
+                    category:
+                        "Prepared Meals",
+
+                    quantity: 1,
+
+                    prepTime: "",
+
+                    expiryTime: "",
+
+                    address: ""
+
+                };
+
+
+                $scope.donationSubmitted =
+                    false;
+
+            };
+
+
+        /* =====================================
+           TOTAL QUANTITY
+        ===================================== */
+
+        $scope.getTotalQuantity =
+            function () {
+
+
+                var total = 0;
+
+
+                angular.forEach(
+                    $scope.donations,
+                    function (item) {
+
+
+                        total +=
+                            Number(
+                                item.quantity
+                            ) || 0;
+
+                    }
+                );
+
+
+                return total;
+
+            };
+
+
+        /* =====================================
+           IMPACT CALCULATION
+        ===================================== */
+
+        $scope.getImpact =
+            function () {
+
+
+                var quantity =
+                    Number(
+                        $scope.donation.quantity
+                    ) || 0;
+
+
+                return quantity;
+
+            };
+
+
+        /* =====================================
+           CO₂ CALCULATION
+        ===================================== */
+
+        $scope.getCO2 =
+            function () {
+
+
+                var quantity =
+                    Number(
+                        $scope.donation.quantity
+                    ) || 0;
+
+
+                return (
+
+                    quantity * 0.28
+
+                ).toFixed(1);
+
+            };
+
+    }
+);
+
+</script>
+
+
+<script src="enhance.js"></script>
+</body>
+
+</html>

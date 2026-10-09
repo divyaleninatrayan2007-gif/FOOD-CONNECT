@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="ngoApp">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Food Connect — 12 · NGO Registration</title>
+
+    <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="enhance.css">
+    <script src="access.js"></script>
+
+    <!-- AngularJS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+</head>
+
+<body ng-controller="NGOController">
+
+<div class="phone">
+<div class="screen">
+<div class="content page-pad">
+
+    <!-- HEADER -->
+    <div class="brand-row">
+
+        <a href="02-login.html" class="back-btn">←</a>
+
+        <div class="brand" style="font-size:16px;">
+            NGO Registration
+        </div>
+
+        <div class="avatar"></div>
+
+    </div>
+
+
+    <!-- STEP -->
+    <span class="flow-step-hint">
+        STEP 1 OF 2 · ORGANIZATION DETAILS
+    </span>
+
+
+    <h1 class="hero">
+        Register Your NGO
+    </h1>
+
+
+    <p class="sub">
+        Tell us about your organization so our AI can start matching you
+        with nearby verified food donors.
+    </p>
+
+
+    <!-- FORM -->
+    <form id="ngoRegisterForm"
+          name="ngoForm"
+          novalidate>
+
+
+        <!-- UPLOAD CERTIFICATE -->
+        <label class="upload-box">
+
+            <input type="file"
+                   hidden
+                   accept="image/*,.pdf">
+
+            <span class="upload-icon">📄</span>
+
+            <strong>
+                Upload Registration Certificate
+            </strong>
+
+            <small>
+                AI WILL VERIFY YOUR NGO AUTOMATICALLY
+            </small>
+
+        </label>
+
+
+        <!-- ORGANIZATION NAME -->
+        <div class="field">
+
+            <label>
+                Organization Name
+            </label>
+
+            <input type="text"
+                   id="orgName"
+                   name="orgName"
+                   placeholder="St. Jude Shelter"
+                   ng-model="ngo.orgName"
+                   required>
+
+        </div>
+
+
+        <!-- ORGANIZATION TYPE -->
+        <div class="field">
+
+            <label>
+                Organization Type
+            </label>
+
+            <select id="orgType"
+                    name="orgType"
+                    ng-model="ngo.orgType"
+                    ng-change="updateOrgType()">
+
+                <option value="Shelter">
+                    Shelter
+                </option>
+
+                <option value="Food Bank / Pantry">
+                    Food Bank / Pantry
+                </option>
+
+                <option value="Community Kitchen">
+                    Community Kitchen
+                </option>
+
+                <option value="Orphanage">
+                    Orphanage
+                </option>
+
+                <option value="Elderly Care">
+                    Elderly Care
+                </option>
+
+                <option value="Other">
+                    Other
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- REGISTRATION NUMBER -->
+        <div class="field">
+
+            <label>
+                Registration / License Number
+            </label>
+
+            <input type="text"
+                   id="orgRegNumber"
+                   name="orgRegNumber"
+                   placeholder="NGO-2024-00182"
+                   ng-model="ngo.orgRegNumber">
+
+        </div>
+
+
+        <!-- CONTACT NAME -->
+        <div class="field">
+
+            <label>
+                Contact Person Name
+            </label>
+
+            <input type="text"
+                   id="orgContactName"
+                   name="orgContactName"
+                   placeholder="Maha Ahmed"
+                   ng-model="ngo.contactName"
+                   required>
+
+        </div>
+
+
+        <!-- PHONE -->
+        <div class="field">
+
+            <label>
+                Contact Phone
+            </label>
+
+            <input type="tel"
+                   id="orgPhone"
+                   name="orgPhone"
+                   placeholder="+91 9876543210"
+                   ng-model="ngo.phone">
+
+        </div>
+
+
+        <!-- EMAIL -->
+        <div class="field">
+
+            <label>
+                Organization Email
+            </label>
+
+            <input type="email"
+                   id="orgEmail"
+                   name="orgEmail"
+                   placeholder="contact@ngo.org"
+                   ng-model="ngo.email"
+                   required>
+
+        </div>
+
+
+        <!-- PASSWORD -->
+        <div class="field">
+
+            <label>
+                Create Password
+            </label>
+
+            <input type="password"
+                   id="orgPassword"
+                   name="orgPassword"
+                   placeholder="Create a password"
+                   ng-model="ngo.password"
+                   required>
+
+        </div>
+
+
+        <!-- CONFIRM PASSWORD -->
+        <div class="field">
+
+            <label>
+                Confirm Password
+            </label>
+
+            <input type="password"
+                   id="orgConfirmPassword"
+                   name="orgConfirmPassword"
+                   placeholder="Confirm your password"
+                   ng-model="ngo.confirmPassword"
+                   required>
+
+        </div>
+
+
+        <!-- CAPACITY -->
+        <div class="field" style="position:relative;">
+
+            <label>
+                Daily Capacity
+            </label>
+
+            <input type="number"
+                   id="orgCapacity"
+                   name="orgCapacity"
+                   min="1"
+                   placeholder="180"
+                   ng-model="ngo.capacity"
+                   required>
+
+            <span class="unit-label">
+                People / day
+            </span>
+
+        </div>
+
+
+        <!-- ADDRESS -->
+        <div class="field">
+
+            <label>
+                Organization Address
+            </label>
+
+            <input type="text"
+                   id="orgAddress"
+                   name="orgAddress"
+                   placeholder="221B Baker Street, Green District"
+                   ng-model="ngo.address"
+                   required>
+
+        </div>
+
+
+        <!-- MISSION -->
+        <div class="field">
+
+            <label>
+                Short Mission Statement (optional)
+            </label>
+
+            <textarea id="orgMission"
+                      name="orgMission"
+                      placeholder="Emergency shelter & daily meal program for the local community."
+                      ng-model="ngo.mission"></textarea>
+
+        </div>
+
+
+        <!-- AI VERIFICATION -->
+        <section class="ai-verify">
+
+            <div class="ai-verify-head">
+
+                <span>
+                    ✦ AI Verification
+                </span>
+
+                <span class="live-tag">
+                    LIVE ANALYSIS
+                </span>
+
+            </div>
+
+
+            <div class="ai-grid">
+
+                <div>
+
+                    <small>
+                        DOCUMENT CHECK
+                    </small>
+
+                    <strong class="good">
+                        Looks Good
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <small>
+                        ORG CATEGORY
+                    </small>
+
+                    <strong>
+                        {{ ngo.orgType }}
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <small>
+                        ESTIMATED APPROVAL
+                    </small>
+
+                    <strong class="good">
+                        Instant
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <small>
+                        NETWORK STATUS
+                    </small>
+
+                    <strong class="warn">
+                        Ready to Match
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ANGULARJS LIVE MODEL -->
+        <section class="ai-verify"
+                 style="margin-top:15px;">
+
+            <div class="ai-verify-head">
+
+                <span>
+                    ✦ AngularJS Live Model
+                </span>
+
+                <span class="live-tag">
+                    REAL TIME
+                </span>
+
+            </div>
+
+
+            <div style="padding:12px;">
+
+                <p>
+                    <strong>Organization:</strong>
+                    {{ ngo.orgName || 'Not entered' }}
+                </p>
+
+                <p>
+                    <strong>Type:</strong>
+                    {{ ngo.orgType }}
+                </p>
+
+                <p>
+                    <strong>Registration No:</strong>
+                    {{ ngo.orgRegNumber || 'Not entered' }}
+                </p>
+
+                <p>
+                    <strong>Contact:</strong>
+                    {{ ngo.contactName || 'Not entered' }}
+                </p>
+
+                <p>
+                    <strong>Phone:</strong>
+                    {{ ngo.phone || 'Not entered' }}
+                </p>
+
+                <p>
+                    <strong>Email:</strong>
+                    {{ ngo.email || 'Not entered' }}
+                </p>
+
+                <p>
+                    <strong>Capacity:</strong>
+                    {{ ngo.capacity || 'Not entered' }}
+                </p>
+
+                <p>
+                    <strong>Address:</strong>
+                    {{ ngo.address || 'Not entered' }}
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- REGISTER BUTTON -->
+        <button type="button"
+                class="btn-primary"
+                style="width:100%; margin-top:6px;"
+                ng-click="registerNgo()"
+                ng-disabled="isRegistering"
+                id="ngoRegisterBtn">
+
+            {{ buttonText }}
+
+        </button>
+
+
+    </form>
+
+</div>
+</div>
+</div>
+
+
+<!-- ================================================= -->
+<!-- ANGULARJS -->
+<!-- ================================================= -->
+
+<script>
+
+var app = angular.module("ngoApp", []);
+
+
+app.controller("NGOController", function($scope) {
+
+    console.log("AngularJS NGO Controller Loaded");
+
+
+    // ==============================
+    // NGO MODEL
+    // ==============================
+
+    $scope.ngo = {
+
+        orgName: "",
+
+        orgType: "Shelter",
+
+        orgRegNumber: "",
+
+        contactName: "",
+
+        phone: "",
+
+        email: "",
+
+        password: "",
+
+        confirmPassword: "",
+
+        capacity: "",
+
+        address: "",
+
+        mission: ""
+
+    };
+
+
+    // ==============================
+    // BUTTON
+    // ==============================
+
+    $scope.buttonText = "Register & Continue";
+
+    $scope.isRegistering = false;
+
+
+    // ==============================
+    // ORGANIZATION TYPE
+    // ==============================
+
+    $scope.updateOrgType = function() {
+
+        console.log(
+            "Organization Type Changed:",
+            $scope.ngo.orgType
+        );
+
+    };
+
+
+    // ==============================
+    // REGISTER NGO
+    // ==============================
+
+    $scope.registerNgo = function() {
+
+        console.log("Register button clicked");
+
+        console.log(
+            "Current AngularJS Model:",
+            angular.copy($scope.ngo)
+        );
+
+
+        // Organization Name
+        if (!$scope.ngo.orgName ||
+            $scope.ngo.orgName.trim() === "") {
+
+            alert("Please enter your organization's name.");
+            return;
+        }
+
+
+        // Contact Name
+        if (!$scope.ngo.contactName ||
+            $scope.ngo.contactName.trim() === "") {
+
+            alert("Please enter a contact person's name.");
+            return;
+        }
+
+
+        // Email
+        if (!$scope.ngo.email ||
+            $scope.ngo.email.trim() === "") {
+
+            alert("Please enter your organization's email address.");
+            return;
+        }
+
+
+        // Password
+        if (!$scope.ngo.password) {
+
+            alert("Please create a password.");
+            return;
+        }
+
+
+        // Password Length
+        if ($scope.ngo.password.length < 6) {
+
+            alert("Password must contain at least 6 characters.");
+            return;
+        }
+
+
+        // Confirm Password
+        if (!$scope.ngo.confirmPassword) {
+
+            alert("Please confirm your password.");
+            return;
+        }
+
+
+        // Password Match
+        if ($scope.ngo.password !==
+            $scope.ngo.confirmPassword) {
+
+            alert("Passwords do not match.");
+            return;
+        }
+
+
+        // Capacity
+        if (!$scope.ngo.capacity) {
+
+            alert("Please enter your NGO's daily capacity.");
+            return;
+        }
+
+
+        // Address
+        if (!$scope.ngo.address ||
+            $scope.ngo.address.trim() === "") {
+
+            alert("Please enter your organization's address.");
+            return;
+        }
+
+
+        // ==============================
+        // USER OBJECT
+        // ==============================
+
+        var user = {
+
+            name: $scope.ngo.contactName,
+
+            email: $scope.ngo.email,
+
+            password: $scope.ngo.password,
+
+            role: "ngo"
+
+        };
+
+
+        // ==============================
+        // NGO PROFILE
+        // ==============================
+
+        var ngoProfile = {
+
+            orgName: $scope.ngo.orgName,
+
+            orgType: $scope.ngo.orgType,
+
+            regNumber: $scope.ngo.orgRegNumber,
+
+            contactName: $scope.ngo.contactName,
+
+            phone: $scope.ngo.phone,
+
+            email: $scope.ngo.email,
+
+            capacity: $scope.ngo.capacity,
+
+            address: $scope.ngo.address,
+
+            mission: $scope.ngo.mission,
+
+            verified: true
+
+        };
+
+
+        // ==============================
+        // LOCAL STORAGE
+        // ==============================
+
+        localStorage.setItem(
+            "rescueUser",
+            JSON.stringify(user)
+        );
+
+
+        localStorage.setItem(
+            "ngoProfile",
+            JSON.stringify(ngoProfile)
+        );
+
+
+        // ==============================
+        // SESSION
+        // ==============================
+
+        if (typeof rescueSetSession === "function") {
+
+            rescueSetSession(
+                "ngo",
+                $scope.ngo.orgName
+            );
+
+        }
+
+
+        sessionStorage.removeItem("ngoDraftEmail");
+
+
+        // ==============================
+        // BUTTON UPDATE
+        // ==============================
+
+        $scope.isRegistering = true;
+
+        $scope.buttonText =
+            "✓ Registered — Redirecting...";
+
+
+        // ==============================
+        // FINAL MODEL
+        // ==============================
+
+        console.log(
+            "Final AngularJS Model:",
+            angular.copy($scope.ngo)
+        );
+
+
+        // ==============================
+        // SUCCESS
+        // ==============================
+
+        alert(
+            $scope.ngo.orgName +
+            " has been registered successfully! " +
+            "Next, tell us what food your NGO needs."
+        );
+
+
+        // ==============================
+        // REDIRECT
+        // ==============================
+
+        window.location.href =
+            "13-ngo-request-food.html";
+
+    };
+
+});
+
+</script>
+
+<script src="enhance.js"></script>
+</body>
+</html>

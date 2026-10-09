@@ -1,0 +1,763 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Manage Volunteers - Food Connect</title>
+
+    <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="enhance.css">
+
+    <style>
+
+        body {
+            margin: 0;
+        }
+
+        .admin-page {
+            min-height: 100vh;
+            padding: 25px;
+        }
+
+        .admin-container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        /* Header */
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            gap: 15px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-icon {
+            font-size: 34px;
+        }
+
+        .header-title h1 {
+            margin: 0;
+            font-size: 25px;
+        }
+
+        .header-title p {
+            margin: 4px 0 0;
+            color: #777;
+            font-size: 14px;
+        }
+
+        .back-button {
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* Summary */
+
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 22px;
+            box-shadow:
+                0 5px 20px
+                rgba(0, 0, 0, 0.07);
+        }
+
+        .summary-card strong {
+            font-size: 25px;
+        }
+
+        .summary-card span {
+            color: #666;
+            margin-left: 8px;
+        }
+
+        /* Search */
+
+        .search-box {
+            background: white;
+            padding: 16px;
+            border-radius: 14px;
+            margin-bottom: 20px;
+            box-shadow:
+                0 5px 20px
+                rgba(0, 0, 0, 0.06);
+        }
+
+        .search-box input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        /* Volunteers */
+
+        .volunteer-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .volunteer-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow:
+                0 5px 20px
+                rgba(0, 0, 0, 0.07);
+        }
+
+        .volunteer-header {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            margin-bottom: 15px;
+        }
+
+        .volunteer-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #eeeeee;
+            font-size: 24px;
+        }
+
+        .volunteer-name {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .volunteer-email {
+            color: #777;
+            font-size: 13px;
+            margin-top: 3px;
+            word-break: break-word;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 9px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #777;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .availability {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 12px;
+            background: #e8f7ed;
+            color: #18733a;
+        }
+
+        .vehicle {
+            font-size: 18px;
+        }
+
+        /* Loading / Empty / Error */
+
+        .message-box {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow:
+                0 5px 20px
+                rgba(0, 0, 0, 0.06);
+        }
+
+        .message-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .error {
+            color: #b42318;
+        }
+
+        @media (max-width: 750px) {
+
+            .volunteer-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            .admin-page {
+                padding: 15px;
+            }
+
+            .page-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .detail-row {
+                flex-direction: column;
+                gap: 3px;
+            }
+
+            .detail-value {
+                text-align: left;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="admin-page">
+
+<div class="admin-container">
+
+
+    <!-- ================================= -->
+    <!-- HEADER -->
+    <!-- ================================= -->
+
+    <div class="page-header">
+
+        <div class="header-left">
+
+            <div class="header-icon">
+                👥
+            </div>
+
+            <div class="header-title">
+
+                <h1>
+                    Volunteer Management
+                </h1>
+
+                <p>
+                    View registered Food Connect volunteers
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="back-button"
+            onclick="goBack()"
+        >
+            ← Dashboard
+        </button>
+
+    </div>
+
+
+    <!-- ================================= -->
+    <!-- SUMMARY -->
+    <!-- ================================= -->
+
+    <div class="summary-card">
+
+        <strong id="volunteerCount">
+            0
+        </strong>
+
+        <span>
+            Registered Volunteers
+        </span>
+
+    </div>
+
+
+    <!-- ================================= -->
+    <!-- SEARCH -->
+    <!-- ================================= -->
+
+    <div class="search-box">
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Search by name, email, phone or vehicle..."
+            oninput="filterVolunteers()"
+        >
+
+    </div>
+
+
+    <!-- ================================= -->
+    <!-- VOLUNTEER LIST -->
+    <!-- ================================= -->
+
+    <div
+        id="volunteerGrid"
+        class="volunteer-grid"
+    >
+
+        <div class="message-box">
+
+            <div class="message-icon">
+                ⏳
+            </div>
+
+            Loading volunteers...
+
+        </div>
+
+    </div>
+
+
+</div>
+
+</div>
+
+
+<script>
+
+
+let allVolunteers = [];
+
+
+// ==========================================
+// LOAD VOLUNTEERS
+// ==========================================
+
+async function loadVolunteers() {
+
+    const grid =
+        document.getElementById(
+            "volunteerGrid"
+        );
+
+
+    try {
+
+        const response =
+            await fetch(
+                "http://localhost:5000/api/admin/volunteers"
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok || !data.success) {
+
+            throw new Error(
+                data.message ||
+                "Failed to load volunteers"
+            );
+
+        }
+
+
+        allVolunteers =
+            data.volunteers || [];
+
+
+        document.getElementById(
+            "volunteerCount"
+        ).textContent =
+            allVolunteers.length;
+
+
+        displayVolunteers(
+            allVolunteers
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Volunteer Loading Error:",
+            error
+        );
+
+
+        grid.innerHTML = `
+
+            <div class="message-box">
+
+                <div class="message-icon">
+                    ❌
+                </div>
+
+                <div class="error">
+                    Failed to load volunteers
+                </div>
+
+                <p>
+                    ${error.message}
+                </p>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+// ==========================================
+// DISPLAY VOLUNTEERS
+// ==========================================
+
+function displayVolunteers(
+    volunteers
+) {
+
+    const grid =
+        document.getElementById(
+            "volunteerGrid"
+        );
+
+
+    if (volunteers.length === 0) {
+
+        grid.innerHTML = `
+
+            <div class="message-box">
+
+                <div class="message-icon">
+                    👥
+                </div>
+
+                <strong>
+                    No volunteers found
+                </strong>
+
+                <p>
+                    No registered volunteers
+                    match your search.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    grid.innerHTML = "";
+
+
+    volunteers.forEach(
+        function(volunteer) {
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "volunteer-card";
+
+
+            const vehicleIcon =
+                getVehicleIcon(
+                    volunteer.vehicle
+                );
+
+
+            card.innerHTML = `
+
+                <div class="volunteer-header">
+
+                    <div class="volunteer-avatar">
+                        👤
+                    </div>
+
+                    <div>
+
+                        <div class="volunteer-name">
+                            ${escapeHTML(
+                                volunteer.name
+                            )}
+                        </div>
+
+                        <div class="volunteer-email">
+                            ${escapeHTML(
+                                volunteer.email
+                            )}
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        📞 Phone
+                    </span>
+
+                    <span class="detail-value">
+                        ${escapeHTML(
+                            volunteer.phone
+                        )}
+                    </span>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        🚗 Vehicle
+                    </span>
+
+                    <span class="detail-value">
+
+                        <span class="vehicle">
+                            ${vehicleIcon}
+                        </span>
+
+                        ${escapeHTML(
+                            volunteer.vehicle
+                        )}
+
+                    </span>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        📍 Base Address
+                    </span>
+
+                    <span class="detail-value">
+                        ${escapeHTML(
+                            volunteer.baseAddress
+                        )}
+                    </span>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        📏 Max Distance
+                    </span>
+
+                    <span class="detail-value">
+                        ${volunteer.maxDistance} miles
+                    </span>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="detail-label">
+                        🕐 Availability
+                    </span>
+
+                    <span class="detail-value">
+
+                        <span class="availability">
+                            ${escapeHTML(
+                                volunteer.availability
+                            )}
+                        </span>
+
+                    </span>
+
+                </div>
+
+            `;
+
+
+            grid.appendChild(card);
+
+        }
+    );
+
+}
+
+
+// ==========================================
+// SEARCH / FILTER
+// ==========================================
+
+function filterVolunteers() {
+
+    const search =
+        document.getElementById(
+            "searchInput"
+        ).value
+        .toLowerCase()
+        .trim();
+
+
+    const filtered =
+        allVolunteers.filter(
+            function(volunteer) {
+
+                const text = `
+
+                    ${volunteer.name}
+
+                    ${volunteer.email}
+
+                    ${volunteer.phone}
+
+                    ${volunteer.vehicle}
+
+                    ${volunteer.baseAddress}
+
+                    ${volunteer.availability}
+
+                `.toLowerCase();
+
+
+                return text.includes(
+                    search
+                );
+
+            }
+        );
+
+
+    displayVolunteers(
+        filtered
+    );
+
+}
+
+
+// ==========================================
+// VEHICLE ICON
+// ==========================================
+
+function getVehicleIcon(
+    vehicle
+) {
+
+    if (vehicle === "Car") {
+
+        return "🚗";
+
+    }
+
+    if (vehicle === "Van") {
+
+        return "🚐";
+
+    }
+
+    if (vehicle === "Bike") {
+
+        return "🏍️";
+
+    }
+
+    return "🚶";
+
+}
+
+
+// ==========================================
+// BASIC HTML ESCAPE
+// ==========================================
+
+function escapeHTML(value) {
+
+    if (value === null ||
+        value === undefined) {
+
+        return "";
+
+    }
+
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+// ==========================================
+// BACK TO DASHBOARD
+// ==========================================
+
+function goBack() {
+
+    window.location.href =
+        "18-admin-dashboard.html";
+
+}
+
+
+// ==========================================
+// START
+// ==========================================
+
+loadVolunteers();
+
+</script>
+
+
+<script src="enhance.js"></script>
+</body>
+
+</html>
+```

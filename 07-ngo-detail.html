@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Food Connect — 07 · Match Details</title>
+
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="enhance.css">
+<script src="access.js"></script>
+</head>
+
+<body>
+
+<div class="phone">
+
+  <div class="screen">
+
+```
+<div class="content page-pad">
+
+  <!-- HEADER -->
+  <div class="brand-row">
+
+    <a href="06-ai-matching.html"
+       class="back-btn"
+       id="backBtn">
+      ←
+    </a>
+
+    <div class="brand" style="font-size:16px;">
+      Match Details
+    </div>
+
+    <div class="avatar"></div>
+
+  </div>
+
+
+  <!-- TITLE -->
+
+  <h1 class="hero" style="font-size:21px;">
+    AI Match Found 🎯
+  </h1>
+
+  <p class="sub">
+    Review the matched food donation before accepting it.
+  </p>
+
+
+  <!-- MATCH SCORE -->
+
+  <div class="ngo-hero">
+
+    <div class="ngo-hero-top">
+
+      <div class="ngo-logo">
+        🎯
+      </div>
+
+      <div>
+
+        <div class="ngo-name"
+             id="matchTitle">
+          Best Food Match
+        </div>
+
+        <div class="ngo-tagline">
+          Recommended by Food Connect Smart Matching
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="ngo-hero-stats">
+
+      <div>
+
+        <div class="num"
+             id="matchScore">
+          --%
+        </div>
+
+        <div class="lbl">
+          AI Match
+        </div>
+
+      </div>
+
+
+      <div>
+
+        <div class="num"
+             id="matchQuantity">
+          -- kg
+        </div>
+
+        <div class="lbl">
+          Quantity
+        </div>
+
+      </div>
+
+
+      <div>
+
+        <div class="num"
+             id="matchUrgency">
+          --
+        </div>
+
+        <div class="lbl">
+          Urgency
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- AI STATUS -->
+
+  <div class="scan-bar">
+
+    <span class="scan-dot"></span>
+
+    <span id="scanText">
+      AI verified this donation as a suitable match.
+    </span>
+
+  </div>
+
+
+  <!-- DONATION DETAILS -->
+
+  <div class="section-head">
+
+    <h3>
+      Donation Details
+    </h3>
+
+  </div>
+
+
+  <div class="info-card">
+
+    <div class="info-row">
+
+      <div class="info-ic">
+        🍱
+      </div>
+
+      <div class="info-text">
+
+        <strong id="foodName">
+          --
+        </strong>
+
+        <span>
+          Food item
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div class="info-row">
+
+      <div class="info-ic">
+        🏷️
+      </div>
+
+      <div class="info-text">
+
+        <strong id="category">
+          --
+        </strong>
+
+        <span>
+          Food category
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div class="info-row">
+
+      <div class="info-ic">
+        ⚖️
+      </div>
+
+      <div class="info-text">
+
+        <strong id="quantity">
+          --
+        </strong>
+
+        <span>
+          Available quantity
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div class="info-row">
+
+      <div class="info-ic">
+        ✨
+      </div>
+
+      <div class="info-text">
+
+        <strong id="freshness">
+          --
+        </strong>
+
+        <span>
+          Freshness
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div class="info-row">
+
+      <div class="info-ic">
+        📍
+      </div>
+
+      <div class="info-text">
+
+        <strong id="address">
+          --
+        </strong>
+
+        <span>
+          Donation location
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- NGO REQUEST -->
+
+  <div class="section-head">
+
+    <h3>
+      Your Request
+    </h3>
+
+  </div>
+
+
+  <div class="info-card">
+
+    <div class="info-row">
+
+      <div class="info-ic">
+        🏢
+      </div>
+
+      <div class="info-text">
+
+        <strong id="ngoName">
+          --
+        </strong>
+
+        <span>
+          NGO
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div class="info-row">
+
+      <div class="info-ic">
+        🍽️
+      </div>
+
+      <div class="info-text">
+
+        <strong id="requestedFood">
+          --
+        </strong>
+
+        <span>
+          Requested food
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div class="info-row">
+
+      <div class="info-ic">
+        ⚠️
+      </div>
+
+      <div class="info-text">
+
+        <strong id="requestUrgency">
+          --
+        </strong>
+
+        <span>
+          Request urgency
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div class="info-row">
+
+      <div class="info-ic">
+        👥
+      </div>
+
+      <div class="info-text">
+
+        <strong id="peopleCount">
+          --
+        </strong>
+
+        <span>
+          People to be served
+        </span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- MATCHING REASON -->
+
+  <div class="section-head">
+
+    <h3>
+      Why AI Selected This
+    </h3>
+
+  </div>
+
+
+  <div style="
+    background:white;
+    border-radius:14px;
+    padding:16px;
+    margin-bottom:18px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
+  ">
+
+    <div style="
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-bottom:10px;
+    ">
+
+      <span style="font-size:20px;">
+        🤖
+      </span>
+
+      <strong>
+        Smart Matching Analysis
+      </strong>
+
+    </div>
+
+
+    <p style="
+      font-size:12px;
+      line-height:1.6;
+      margin:0;
+      color:#555;
+    ">
+
+      Food Connect compared the food category, available
+      quantity, request urgency and freshness to identify
+      this donation as the best available match.
+
+    </p>
+
+  </div>
+
+
+  <!-- ACCEPT BUTTON -->
+
+  <button
+    id="acceptButton"
+    class="btn-primary"
+    style="width:100%;"
+    onclick="acceptMatch()">
+
+    ✓ Accept Match
+
+  </button>
+
+
+  <!-- BACK BUTTON -->
+
+  <button
+    type="button"
+    id="backHomeButton"
+    style="
+      width:100%;
+      margin-top:10px;
+      background:white;
+      border:1px solid #ddd;
+      border-radius:12px;
+      padding:12px;
+      cursor:pointer;
+    "
+    onclick="window.location.href='04-home.html'">
+
+    Back to Home
+
+  </button>
+
+
+  <!-- ERROR -->
+
+  <div
+    id="errorBox"
+    style="
+      display:none;
+      background:#fff0f0;
+      color:#b00020;
+      padding:14px;
+      border-radius:12px;
+      margin-top:14px;
+      font-size:12px;
+    ">
+
+    <strong>
+      Match information unavailable
+    </strong>
+
+    <p id="errorMessage"></p>
+
+  </div>
+
+
+</div>
+
+
+<nav class="bottom-nav"></nav>
+```
+
+  </div>
+
+</div>
+
+<script>
+
+/* ==========================================
+   LOAD MATCH DATA
+========================================== */
+
+let matchData = null;
+
+
+/* ------------------------------------------
+   LOAD SAVED MATCH
+------------------------------------------ */
+
+function loadMatch() {
+
+    try {
+
+        /*
+         * First try confirmedMatch.
+         * If it doesn't exist, use rescueMatch.
+         */
+
+        const confirmed =
+            localStorage.getItem("confirmedMatch");
+
+        const rescue =
+            localStorage.getItem("rescueMatch");
+
+
+        if (confirmed) {
+
+            matchData =
+                JSON.parse(confirmed);
+
+        }
+        else if (rescue) {
+
+            matchData =
+                JSON.parse(rescue);
+
+        }
+        else {
+
+            showError(
+                "No matching information was found. Please run Smart Matching again."
+            );
+
+            return;
+
+        }
+
+
+        console.log(
+            "Loaded Match:",
+            matchData
+        );
+
+
+        displayMatch();
+
+
+    }
+    catch (error) {
+
+        console.error(
+            "Load Match Error:",
+            error
+        );
+
+        showError(
+            "Unable to read the matching information."
+        );
+
+    }
+
+}
+
+
+/* ==========================================
+   DISPLAY MATCH
+========================================== */
+
+function displayMatch() {
+
+    const donation =
+        matchData.donation || {};
+
+    const request =
+        matchData.request || {};
+
+
+    /* --------------------------------------
+       MATCH SCORE
+    -------------------------------------- */
+
+    document.getElementById(
+        "matchScore"
+    ).textContent =
+        (matchData.matchPercentage || 0) + "%";
+
+
+    /* --------------------------------------
+       DONATION QUANTITY
+    -------------------------------------- */
+
+    document.getElementById(
+        "matchQuantity"
+    ).textContent =
+        (donation.quantity || 0) + " kg";
+
+
+    /* --------------------------------------
+       URGENCY
+    -------------------------------------- */
+
+    document.getElementById(
+        "matchUrgency"
+    ).textContent =
+        request.urgency || "Normal";
+
+
+    /* --------------------------------------
+       FOOD NAME
+    -------------------------------------- */
+
+    document.getElementById(
+        "foodName"
+    ).textContent =
+        donation.foodName || "Food donation";
+
+
+    /* --------------------------------------
+       MATCH TITLE
+    -------------------------------------- */
+
+    document.getElementById(
+        "matchTitle"
+    ).textContent =
+        donation.foodName ||
+        "Best Food Match";
+
+
+    /* --------------------------------------
+       CATEGORY
+    -------------------------------------- */
+
+    document.getElementById(
+        "category"
+    ).textContent =
+        donation.category ||
+        request.category ||
+        "Not specified";
+
+
+    /* --------------------------------------
+       QUANTITY
+    -------------------------------------- */
+
+    document.getElementById(
+        "quantity"
+    ).textContent =
+        (donation.quantity || 0) +
+        " kg";
+
+
+    /* --------------------------------------
+       FRESHNESS
+    -------------------------------------- */
+
+    document.getElementById(
+        "freshness"
+    ).textContent =
+        donation.freshness ||
+        "Not specified";
+
+
+    /* --------------------------------------
+       ADDRESS
+    -------------------------------------- */
+
+    document.getElementById(
+        "address"
+    ).textContent =
+        donation.address ||
+        "Address not available";
+
+
+    /* --------------------------------------
+       NGO NAME
+    -------------------------------------- */
+
+    document.getElementById(
+        "ngoName"
+    ).textContent =
+        request.ngoName ||
+        "NGO";
+
+
+    /* --------------------------------------
+       REQUESTED FOOD
+    -------------------------------------- */
+
+    document.getElementById(
+        "requestedFood"
+    ).textContent =
+        request.foodType ||
+        request.category ||
+        "Food";
+
+
+    /* --------------------------------------
+       REQUEST URGENCY
+    -------------------------------------- */
+
+    document.getElementById(
+        "requestUrgency"
+    ).textContent =
+        request.urgency ||
+        "Normal";
+
+
+    /* --------------------------------------
+       PEOPLE COUNT
+    -------------------------------------- */
+
+    document.getElementById(
+        "peopleCount"
+    ).textContent =
+        request.peopleCount ||
+        "Not specified";
+
+
+    /* --------------------------------------
+       AI STATUS
+    -------------------------------------- */
+
+    document.getElementById(
+        "scanText"
+    ).textContent =
+        "AI verified this donation as a suitable match.";
+
+
+}
+
+
+/* ==========================================
+   ACCEPT MATCH
+========================================== */
+
+async function acceptMatch() {
+
+    if (!matchData) {
+
+        alert(
+            "No matching information available."
+        );
+
+        return;
+
+    }
+
+
+    const requestId =
+        matchData.request?._id;
+
+
+    const donationId =
+        matchData.donation?._id ||
+        matchData.donationId;
+
+
+    if (!requestId || !donationId) {
+
+        alert(
+            "Request ID or Donation ID is missing."
+        );
+
+        console.error(
+            "Missing IDs:",
+            {
+                requestId,
+                donationId
+            }
+        );
+
+        return;
+
+    }
+
+
+    const button =
+        document.getElementById(
+            "acceptButton"
+        );
+
+
+    button.disabled = true;
+
+    button.textContent =
+        "Accepting Match...";
+
+
+    try {
+
+        const response =
+            await fetch(
+                "http://localhost:5000/api/matching/confirm",
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        requestId:
+                            requestId,
+
+                        donationId:
+                            donationId,
+
+                        matchPercentage:
+                            matchData.matchPercentage
+
+                    })
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        console.log(
+            "Accept Match Response:",
+            data
+        );
+
+
+        if (!response.ok || !data.success) {
+
+            throw new Error(
+                data.message ||
+                "Failed to accept match"
+            );
+
+        }
+
+
+        /* ----------------------------------
+           SAVE CONFIRMED MATCH
+        ---------------------------------- */
+
+        const confirmedMatch = {
+
+            request:
+                matchData.request,
+
+            donation:
+                matchData.donation,
+
+            requestId:
+                requestId,
+
+            donationId:
+                donationId,
+
+            matchPercentage:
+                matchData.matchPercentage,
+
+            confirmedAt:
+                new Date().toISOString()
+
+        };
+
+
+        localStorage.setItem(
+            "confirmedMatch",
+            JSON.stringify(
+                confirmedMatch
+            )
+        );
+
+
+        /* ----------------------------------
+           SUCCESS
+        ---------------------------------- */
+
+        button.textContent =
+            "✓ Match Accepted";
+
+
+        document.getElementById(
+            "scanText"
+        ).textContent =
+            "Match accepted successfully!";
+
+
+        /*
+         * Go to confirmation page
+         */
+
+        setTimeout(
+            function () {
+
+                window.location.href =
+                    "14-ngo-confirmation.html";
+
+            },
+            700
+        );
+
+
+    }
+    catch (error) {
+
+        console.error(
+            "Accept Match Error:",
+            error
+        );
+
+
+        alert(
+            error.message ||
+            "Unable to accept match."
+        );
+
+
+        button.disabled =
+            false;
+
+
+        button.textContent =
+            "✓ Accept Match";
+
+    }
+
+}
+
+
+/* ==========================================
+   ERROR
+========================================== */
+
+function showError(message) {
+
+    document.getElementById(
+        "errorBox"
+    ).style.display =
+        "block";
+
+
+    document.getElementById(
+        "errorMessage"
+    ).textContent =
+        message;
+
+
+    document.getElementById(
+        "acceptButton"
+    ).style.display =
+        "none";
+
+}
+
+
+/* ==========================================
+   PAGE LOAD
+========================================== */
+
+window.addEventListener(
+    "DOMContentLoaded",
+    loadMatch
+);
+
+</script>
+
+<script src="enhance.js"></script>
+</body>
+</html>

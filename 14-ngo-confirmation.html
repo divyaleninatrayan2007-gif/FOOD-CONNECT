@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Food Connect — 14 · Food Ready</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="enhance.css">
+<script src="access.js"></script>
+</head>
+<body>
+
+<div class="phone">
+  <div class="screen">
+    <div class="content page-pad">
+
+      <div class="brand-row">
+        <a href="13-ngo-request-food.html" class="back-btn">←</a>
+        <div class="brand" style="font-size:16px;">Food Ready</div>
+        <div class="avatar"></div>
+      </div>
+
+      <div class="donation-success">
+        <div class="success-icon">✓</div>
+        <div class="success-title">Your Food Is Ready!</div>
+        <div class="success-text" id="confirmSubtext">
+          Our AI matched your request with a nearby verified donor. Review the pickup details below and confirm once your NGO has received the food.
+        </div>
+      </div>
+
+      <div class="scan-bar">
+        <span class="scan-dot"></span>
+        Donor verified &amp; pickup confirmed
+      </div>
+
+      <div class="section-head"><h3>Match Details</h3></div>
+
+      <div class="info-card">
+        <div class="info-row">
+          <div class="info-ic">🎁</div>
+          <div class="info-text"><strong id="confirmDonorName">Verified Donor</strong><span id="confirmMatchPct">Matched donor</span></div>
+        </div>
+        <div class="info-row">
+          <div class="info-ic">📦</div>
+          <div class="info-text"><strong id="confirmCategory">Prepared Meals</strong><span id="confirmQuantitySub">For 40 people / meals</span></div>
+        </div>
+        <div class="info-row">
+          <div class="info-ic">🕒</div>
+          <div class="info-text"><strong id="confirmWindow">Flexible</strong><span>Pickup window</span></div>
+        </div>
+        <div class="info-row">
+          <div class="info-ic">📍</div>
+          <div class="info-text"><strong id="confirmAddress">Pickup address on file</strong><span>Delivering to your NGO</span></div>
+        </div>
+      </div>
+
+      <div class="map-box" style="margin: 16px 0;">
+        <div class="map-pin"></div>
+        <div class="map-pin-sm alt" style="top:30%; left:26%;"></div>
+        <div class="map-chip">🚗 Delivery arriving soon</div>
+      </div>
+
+      <button
+        type="button"
+        class="btn-primary confirm-received-btn"
+        style="width:100%;"
+        onclick="confirmFoodReceived()"
+        id="confirmReceivedBtn"
+      >
+        ✅ Confirm Food Received
+      </button>
+
+    </div>
+  </div>
+</div>
+
+<script>
+
+/* =========================
+   PERSONALIZE FROM THE REAL AI MATCH
+   (saved by confirmMatch() on 06-ai-matching.html)
+========================== */
+
+const foodRequest =
+    JSON.parse(localStorage.getItem("ngoFoodRequest") || "null");
+
+const confirmedMatch =
+    JSON.parse(localStorage.getItem("confirmedMatch") || "null");
+
+const donation = confirmedMatch ? confirmedMatch.donation : null;
+
+if (foodRequest) {
+
+    document.getElementById("confirmCategory").textContent =
+        foodRequest.category || "Mixed / Any";
+
+    document.getElementById("confirmQuantitySub").textContent =
+        "For " + foodRequest.quantity + " people / meals";
+
+    document.getElementById("confirmWindow").textContent =
+        foodRequest.requiredTime || "Flexible";
+
+}
+
+if (donation) {
+
+    // Real matched donor / donation, pulled from the AI
+    // matching engine instead of hardcoded placeholder text.
+    document.getElementById("confirmDonorName").textContent =
+        donation.donorName || donation.foodName || "Verified Donor";
+
+    document.getElementById("confirmMatchPct").textContent =
+        "Matched donor · " + (confirmedMatch.matchPercentage || 0) + "% AI match";
+
+    document.getElementById("confirmAddress").textContent =
+        donation.address || "Pickup address on file";
+
+    document.getElementById("confirmSubtext").textContent =
+        "Our AI matched your " +
+        (foodRequest ? foodRequest.category.toLowerCase() : "food") +
+        " request with " + (donation.foodName || "a nearby verified donor") +
+        ". Review the pickup details below and confirm once your NGO has received the food.";
+
+} else {
+
+    // No confirmed match in storage — this page shouldn't normally
+    // be reached without going through 06-ai-matching.html first.
+    document.getElementById("confirmSubtext").textContent =
+        "We couldn't find a confirmed match for this request. Please go back and run AI matching again.";
+
+}
+
+
+/* =========================
+   CONFIRM RECEIPT → LOG OUT
+========================== */
+
+function confirmFoodReceived() {
+
+    const btn = document.getElementById("confirmReceivedBtn");
+    btn.disabled = true;
+    btn.textContent = "Confirming...";
+
+    setTimeout(function () {
+
+        alert(
+            "🎉 Thank you! Your NGO has confirmed receipt of the food. You'll now be logged out."
+        );
+
+        localStorage.removeItem("ngoFoodRequest");
+        localStorage.removeItem("confirmedMatch");
+        localStorage.removeItem("rescueMatch");
+        localStorage.removeItem("loggedInUser");
+        rescueClearSession();
+
+        window.location.href = "02-login.html";
+
+    }, 900);
+
+}
+
+</script>
+
+<script src="enhance.js"></script>
+</body>
+</html>

@@ -1,0 +1,1088 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Food Connect — 06 · AI Smart Matching</title>
+
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="enhance.css">
+
+<script src="access.js"></script>
+
+</head>
+
+
+<body>
+
+
+<div class="phone">
+
+<div class="screen">
+
+
+<div class="content page-pad">
+
+
+<!-- =========================================
+     HEADER
+========================================= -->
+
+<div class="brand-row">
+
+    <div class="brand">
+        <span class="check">✓</span>
+        Food Connect
+    </div>
+
+    <div class="avatar"></div>
+
+</div>
+
+
+<h1 class="hero">
+    Smart Matching Engine
+</h1>
+
+
+<p class="sub">
+
+    Our AI ranks available food donations
+    based on category, quantity, urgency
+    and freshness.
+
+</p>
+
+
+<!-- =========================================
+     SCAN STATUS
+========================================= -->
+
+<div class="scan-bar">
+
+    <span class="scan-dot"></span>
+
+    <span id="scanText">
+        Finding the best food match...
+    </span>
+
+</div>
+
+
+<!-- =========================================
+     MAP
+========================================= -->
+
+<div class="map-box"
+     style="margin-bottom:18px;">
+
+    <div class="map-pin"></div>
+
+    <div class="map-pin-sm"
+         style="top:35%; left:28%;">
+    </div>
+
+    <div class="map-pin-sm alt"
+         style="top:62%; left:70%;">
+    </div>
+
+    <div class="map-pin-sm"
+         style="top:22%; left:68%;">
+    </div>
+
+
+    <div class="map-chip"
+         id="foodChip">
+
+        🎯 Matching food...
+
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     TOP MATCH
+========================================= -->
+
+<div class="section-head">
+
+    <h3>
+        Top Match
+    </h3>
+
+</div>
+
+
+<!-- =========================================
+     LOADING
+========================================= -->
+
+<div id="loadingBox"
+     class="match-card best">
+
+    <div class="match-info">
+
+        <div class="match-name">
+            Searching...
+        </div>
+
+        <div class="match-meta">
+            AI is checking available donations
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     MATCH RESULT
+========================================= -->
+
+<div id="resultBox"
+     style="display:none;">
+
+
+    <!-- MATCH SUMMARY -->
+
+    <div class="match-card best">
+
+        <div class="match-rank">
+            1
+        </div>
+
+
+        <div class="match-info">
+
+            <div class="match-name"
+                 id="donorName">
+
+                Verified Donor
+
+            </div>
+
+
+            <div class="match-meta"
+                 id="matchMeta">
+
+                Best food donation match
+
+            </div>
+
+        </div>
+
+
+        <div class="match-score">
+
+            <span id="matchScore">
+                0%
+            </span>
+
+            <span class="msub">
+                match
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================
+         MATCH DETAILS
+    ====================================== -->
+
+    <div style="
+        background:white;
+        border-radius:14px;
+        padding:16px;
+        margin-top:12px;
+        box-shadow:0 4px 12px rgba(0,0,0,0.08);
+    ">
+
+
+        <p>
+
+            <strong>
+                Food:
+            </strong>
+
+            <span id="foodName">
+                -
+            </span>
+
+        </p>
+
+
+        <p>
+
+            <strong>
+                Category:
+            </strong>
+
+            <span id="category">
+                -
+            </span>
+
+        </p>
+
+
+        <p>
+
+            <strong>
+                Quantity:
+            </strong>
+
+            <span id="quantity">
+                -
+            </span>
+
+        </p>
+
+
+        <p>
+
+            <strong>
+                Freshness:
+            </strong>
+
+            <span id="freshness">
+                -
+            </span>
+
+        </p>
+
+
+        <p>
+
+            <strong>
+                Address:
+            </strong>
+
+            <span id="address">
+                -
+            </span>
+
+        </p>
+
+
+    </div>
+
+
+    <!-- =====================================
+         ACCEPT MATCH
+    ====================================== -->
+
+    <button
+        id="confirmButton"
+        class="btn-primary"
+        style="width:100%; margin-top:18px;"
+        onclick="confirmMatch()">
+
+        Accept Match
+
+    </button>
+
+
+</div>
+
+
+<!-- =========================================
+     NO MATCH
+========================================= -->
+
+<div id="noMatchBox"
+     style="display:none;">
+
+
+    <div class="match-card">
+
+        <div class="match-info">
+
+            <div class="match-name">
+
+                No Match Found
+
+            </div>
+
+
+            <div class="match-meta">
+
+                No suitable food donation
+                is currently available.
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <button
+        type="button"
+        class="btn-primary"
+        style="width:100%; margin-top:14px;"
+        onclick="window.location.href='04-home.html'">
+
+        Back to Home
+
+    </button>
+
+
+</div>
+
+
+<!-- =========================================
+     ERROR
+========================================= -->
+
+<div id="errorBox"
+     style="
+        display:none;
+        background:#fff0f0;
+        border-radius:14px;
+        padding:16px;
+        margin-top:15px;
+        color:#b00020;
+     ">
+
+
+    <strong>
+        Matching Error
+    </strong>
+
+
+    <p id="errorMessage"></p>
+
+
+    <button
+        type="button"
+        class="btn-primary"
+        style="width:100%; margin-top:10px;"
+        onclick="window.location.href='04-home.html'">
+
+        Back to Home
+
+    </button>
+
+
+</div>
+
+
+</div>
+
+
+<!-- =========================================
+     BOTTOM NAVIGATION
+========================================= -->
+
+<nav class="bottom-nav"></nav>
+
+
+</div>
+
+</div>
+
+
+<script>
+
+
+// ==========================================
+// GLOBAL MATCHING RESULT
+// ==========================================
+
+let matchingResult = null;
+
+
+// ==========================================
+// START MATCHING
+// ==========================================
+
+async function startMatching() {
+
+    try {
+
+
+        // ----------------------------------
+        // GET SAVED NGO REQUEST
+        // ----------------------------------
+
+        const savedRequest =
+            localStorage.getItem(
+                "ngoFoodRequest"
+            );
+
+
+        if (!savedRequest) {
+
+            showError(
+                "No NGO food request found. Please create a food request first."
+            );
+
+            return;
+
+        }
+
+
+        const foodRequest =
+            JSON.parse(savedRequest);
+
+
+        // ----------------------------------
+        // CHECK REQUEST ID
+        // ----------------------------------
+
+        if (!foodRequest._id) {
+
+            showError(
+                "Food request ID is missing. Please create the request again."
+            );
+
+            return;
+
+        }
+
+
+        console.log(
+            "NGO Request:",
+            foodRequest
+        );
+
+
+        // ----------------------------------
+        // DISPLAY REQUEST
+        // ----------------------------------
+
+        document.getElementById(
+            "foodChip"
+        ).textContent =
+
+            "🎯 " +
+
+            (
+                foodRequest.category ||
+                foodRequest.foodType ||
+                "Food"
+            ) +
+
+            " · " +
+
+            (
+                foodRequest.quantity ||
+                0
+            ) +
+
+            " kg";
+
+
+        document.getElementById(
+            "scanText"
+        ).textContent =
+            "AI is finding the best match...";
+
+
+        // ----------------------------------
+        // CALL MATCHING API
+        // ----------------------------------
+
+        const response =
+            await fetch(
+                "http://localhost:5000/api/matching",
+                {
+
+                    method: "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    body: JSON.stringify({
+
+                        requestId:
+                            foodRequest._id
+
+                    })
+
+                }
+            );
+
+
+        // ----------------------------------
+        // READ RESPONSE
+        // ----------------------------------
+
+        const data =
+            await response.json();
+
+
+        console.log(
+            "Matching Response:",
+            data
+        );
+
+
+        // ----------------------------------
+        // BACKEND ERROR
+        // ----------------------------------
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.message ||
+                "Matching request failed"
+            );
+
+        }
+
+
+        // ----------------------------------
+        // NO MATCH
+        // ----------------------------------
+
+        if (
+            data.matched === false ||
+            !data.donation
+        ) {
+
+            document.getElementById(
+                "loadingBox"
+            ).style.display =
+                "none";
+
+
+            document.getElementById(
+                "noMatchBox"
+            ).style.display =
+                "block";
+
+
+            document.getElementById(
+                "scanText"
+            ).textContent =
+                "No suitable match found";
+
+
+            return;
+
+        }
+
+
+        // ----------------------------------
+        // SAVE MATCH RESULT
+        // ----------------------------------
+
+        matchingResult =
+            data;
+
+
+        localStorage.setItem(
+            "rescueMatch",
+            JSON.stringify(data)
+        );
+
+
+        // ----------------------------------
+        // GET DONATION
+        // ----------------------------------
+
+        const donation =
+            data.donation;
+
+
+        // ----------------------------------
+        // DONOR NAME
+        // ----------------------------------
+
+        const donorName =
+
+            donation.donorName ||
+
+            donation.name ||
+
+            donation.organizationName ||
+
+            donation.foodName ||
+
+            "Verified Donor";
+
+
+        // ----------------------------------
+        // DISPLAY DONOR
+        // ----------------------------------
+
+        document.getElementById(
+            "donorName"
+        ).textContent =
+            donorName;
+
+
+        // ----------------------------------
+        // MATCH PERCENTAGE
+        // ----------------------------------
+
+        document.getElementById(
+            "matchScore"
+        ).textContent =
+
+            (
+                data.matchPercentage ||
+                0
+            ) + "%";
+
+
+        // ----------------------------------
+        // MATCH DESCRIPTION
+        // ----------------------------------
+
+        document.getElementById(
+            "matchMeta"
+        ).textContent =
+
+            "Best match based on food requirements";
+
+
+        // ----------------------------------
+        // FOOD
+        // ----------------------------------
+
+        document.getElementById(
+            "foodName"
+        ).textContent =
+
+            donation.foodName ||
+            "-";
+
+
+        // ----------------------------------
+        // CATEGORY
+        // ----------------------------------
+
+        document.getElementById(
+            "category"
+        ).textContent =
+
+            donation.category ||
+            "-";
+
+
+        // ----------------------------------
+        // QUANTITY
+        // ----------------------------------
+
+        document.getElementById(
+            "quantity"
+        ).textContent =
+
+            (
+                donation.quantity ||
+                0
+            ) + " kg";
+
+
+        // ----------------------------------
+        // FRESHNESS
+        // ----------------------------------
+
+        document.getElementById(
+            "freshness"
+        ).textContent =
+
+            donation.freshness ||
+            "Not specified";
+
+
+        // ----------------------------------
+        // ADDRESS
+        // ----------------------------------
+
+        document.getElementById(
+            "address"
+        ).textContent =
+
+            donation.address ||
+            "Not specified";
+
+
+        // ----------------------------------
+        // HIDE LOADING
+        // ----------------------------------
+
+        document.getElementById(
+            "loadingBox"
+        ).style.display =
+            "none";
+
+
+        // ----------------------------------
+        // SHOW RESULT
+        // ----------------------------------
+
+        document.getElementById(
+            "resultBox"
+        ).style.display =
+            "block";
+
+
+        // ----------------------------------
+        // UPDATE STATUS
+        // ----------------------------------
+
+        document.getElementById(
+            "scanText"
+        ).textContent =
+            "AI matching completed successfully";
+
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Matching Error:",
+            error
+        );
+
+
+        showError(
+            error.message
+        );
+
+    }
+
+}
+
+
+// ==========================================
+// SHOW ERROR
+// ==========================================
+
+function showError(message) {
+
+
+    document.getElementById(
+        "loadingBox"
+    ).style.display =
+        "none";
+
+
+    document.getElementById(
+        "resultBox"
+    ).style.display =
+        "none";
+
+
+    document.getElementById(
+        "noMatchBox"
+    ).style.display =
+        "none";
+
+
+    document.getElementById(
+        "errorBox"
+    ).style.display =
+        "block";
+
+
+    document.getElementById(
+        "errorMessage"
+    ).textContent =
+        message;
+
+
+    document.getElementById(
+        "scanText"
+    ).textContent =
+        "Matching failed";
+
+}
+
+
+// ==========================================
+// CONFIRM / ACCEPT MATCH
+// ==========================================
+
+async function confirmMatch() {
+
+
+    // ----------------------------------
+    // CHECK MATCH RESULT
+    // ----------------------------------
+
+    if (!matchingResult) {
+
+        alert(
+            "No matching result available."
+        );
+
+        return;
+
+    }
+
+
+    // ----------------------------------
+    // GET REQUEST ID
+    // ----------------------------------
+
+    const requestId =
+        matchingResult.request &&
+        matchingResult.request._id;
+
+
+    // ----------------------------------
+    // GET DONATION ID
+    // ----------------------------------
+
+    const donationId =
+
+        (
+            matchingResult.donation &&
+            matchingResult.donation._id
+        ) ||
+
+        matchingResult.donationId;
+
+
+    console.log(
+        "Request ID:",
+        requestId
+    );
+
+
+    console.log(
+        "Donation ID:",
+        donationId
+    );
+
+
+    // ----------------------------------
+    // CHECK IDS
+    // ----------------------------------
+
+    if (!requestId || !donationId) {
+
+        alert(
+            "Request ID or Donation ID is missing."
+        );
+
+        return;
+
+    }
+
+
+    // ----------------------------------
+    // GET BUTTON
+    // ----------------------------------
+
+    const button =
+        document.getElementById(
+            "confirmButton"
+        );
+
+
+    // ----------------------------------
+    // DISABLE BUTTON
+    // ----------------------------------
+
+    button.disabled =
+        true;
+
+
+    button.textContent =
+        "Accepting Match...";
+
+
+    try {
+
+
+        // ==================================
+        // CONFIRM MATCH API
+        // ==================================
+
+        const response =
+
+            await fetch(
+                "http://localhost:5000/api/matching/confirm",
+                {
+
+                    method: "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    body: JSON.stringify({
+
+                        requestId:
+                            requestId,
+
+                        donationId:
+                            donationId,
+
+                        matchPercentage:
+                            matchingResult.matchPercentage
+
+                    })
+
+                }
+            );
+
+
+        // ----------------------------------
+        // READ RESPONSE
+        // ----------------------------------
+
+        const data =
+            await response.json();
+
+
+        console.log(
+            "Confirm Match Response:",
+            data
+        );
+
+
+        // ----------------------------------
+        // CHECK BACKEND RESPONSE
+        // ----------------------------------
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
+            throw new Error(
+
+                data.message ||
+                "Failed to accept match"
+
+            );
+
+        }
+
+
+        // ==================================
+        // SAVE CONFIRMED MATCH
+        // ==================================
+
+        const confirmedMatch = {
+
+            request:
+                matchingResult.request,
+
+            donation:
+                matchingResult.donation,
+
+            requestId:
+                requestId,
+
+            donationId:
+                donationId,
+
+            matchPercentage:
+                matchingResult.matchPercentage,
+
+            confirmedAt:
+                new Date().toISOString()
+
+        };
+
+
+        localStorage.setItem(
+            "confirmedMatch",
+            JSON.stringify(
+                confirmedMatch
+            )
+        );
+
+
+        // ==================================
+        // SUCCESS
+        // ==================================
+
+        button.textContent =
+            "✓ Match Accepted";
+
+
+        document.getElementById(
+            "scanText"
+        ).textContent =
+            "Match accepted successfully";
+
+
+        // ==================================
+        // GO TO CONFIRMATION PAGE
+        // ==================================
+
+        setTimeout(
+            function () {
+
+                window.location.href =
+                    "14-ngo-confirmation.html";
+
+            },
+            800
+        );
+
+
+    }
+
+    catch (error) {
+
+
+        console.error(
+            "Confirm Match Error:",
+            error
+        );
+
+
+        alert(
+            error.message ||
+            "Unable to accept match."
+        );
+
+
+        // ----------------------------------
+        // ENABLE BUTTON AGAIN
+        // ----------------------------------
+
+        button.disabled =
+            false;
+
+
+        button.textContent =
+            "Accept Match";
+
+    }
+
+}
+
+
+// ==========================================
+// RUN WHEN PAGE OPENS
+// ==========================================
+
+window.addEventListener(
+    "DOMContentLoaded",
+    startMatching
+);
+
+
+</script>
+
+
+<script src="enhance.js"></script>
+</body>
+
+</html>

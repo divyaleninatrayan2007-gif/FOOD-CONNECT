@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Volunteer Registration - Food Connect</title>
+
+    <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="enhance.css">
+
+    <style>
+        .register-page {
+            min-height: 100vh;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .register-container {
+            width: 100%;
+            max-width: 650px;
+        }
+
+        .register-hero {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .register-icon {
+            font-size: 45px;
+            margin-bottom: 10px;
+        }
+
+        .register-hero h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .register-hero p {
+            font-size: 15px;
+            color: #666;
+        }
+
+        .register-card {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .field {
+            margin-bottom: 18px;
+        }
+
+        .field label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 7px;
+            font-size: 14px;
+        }
+
+        .field input,
+        .field select {
+            width: 100%;
+            padding: 12px 13px;
+            border: 1px solid #d5d5d5;
+            border-radius: 8px;
+            font-size: 14px;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        .field input:focus,
+        .field select:focus {
+            border-color: #4f46e5;
+        }
+
+        .form-hint {
+            font-size: 12px;
+            color: #777;
+            margin-top: 5px;
+        }
+
+        .register-button {
+            width: 100%;
+            border: none;
+            padding: 14px;
+            border-radius: 9px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        .register-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 18px;
+            font-size: 14px;
+        }
+
+        .error-message {
+            display: none;
+            padding: 12px;
+            margin-bottom: 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            background: #ffe8e8;
+            color: #b42318;
+        }
+
+        .success-message {
+            display: none;
+            padding: 12px;
+            margin-bottom: 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            background: #e8f7ed;
+            color: #18733a;
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .register-card {
+                padding: 22px;
+            }
+
+            .register-hero h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+<script src="access.js"></script>
+</head>
+
+<body>
+
+<div class="register-page">
+
+    <div class="register-container">
+
+        <!-- Header -->
+        <div class="register-hero">
+
+            <div class="register-icon">🤝</div>
+
+            <h1>Volunteer Registration</h1>
+
+            <p>
+                Join Food Connect and help deliver rescued food to people in need.
+            </p>
+
+        </div>
+
+
+        <!-- Registration Card -->
+        <div class="register-card">
+
+            <div id="errorMessage" class="error-message"></div>
+
+            <div id="successMessage" class="success-message">
+                Registration successful! Redirecting to available pickups...
+            </div>
+
+
+            <form id="volunteerRegisterForm">
+
+                <!-- Name + Email -->
+                <div class="form-row">
+
+                    <div class="field">
+                        <label for="name">Full Name</label>
+
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            placeholder="Enter your full name"
+                            required
+                        >
+                    </div>
+
+
+                    <div class="field">
+                        <label for="email">Email Address</label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="Enter your email"
+                            required
+                        >
+                    </div>
+
+                </div>
+
+
+                <!-- Password + Confirm Password -->
+                <div class="form-row">
+
+                    <div class="field">
+                        <label for="password">Password</label>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter password"
+                            minlength="6"
+                            required
+                        >
+
+                        <div class="form-hint">
+                            Minimum 6 characters
+                        </div>
+                    </div>
+
+
+                    <div class="field">
+                        <label for="confirmPassword">Confirm Password</label>
+
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            placeholder="Re-enter password"
+                            required
+                        >
+                    </div>
+
+                </div>
+
+
+                <!-- Phone + Vehicle -->
+                <div class="form-row">
+
+                    <div class="field">
+                        <label for="phone">Phone Number</label>
+
+                        <input
+                            type="tel"
+                            id="phone"
+                            name="phone"
+                            placeholder="Enter phone number"
+                            required
+                        >
+                    </div>
+
+
+                    <div class="field">
+                        <label for="vehicle">Vehicle</label>
+
+                        <select
+                            id="vehicle"
+                            name="vehicle"
+                            required
+                        >
+                            <option value="">Select vehicle</option>
+                            <option value="Car">Car</option>
+                            <option value="Van">Van</option>
+                            <option value="Bike">Bike</option>
+                            <option value="On Foot">On Foot</option>
+                        </select>
+                    </div>
+
+                </div>
+
+
+                <!-- Address -->
+                <div class="field">
+
+                    <label for="baseAddress">
+                        Base Address
+                    </label>
+
+                    <input
+                        type="text"
+                        id="baseAddress"
+                        name="baseAddress"
+                        placeholder="Enter your base address"
+                        required
+                    >
+
+                    <div class="form-hint">
+                        Used to find nearby food pickup opportunities.
+                    </div>
+
+                </div>
+
+
+                <!-- Distance + Availability -->
+                <div class="form-row">
+
+                    <div class="field">
+
+                        <label for="maxDistance">
+                            Maximum Travel Distance
+                        </label>
+
+                        <input
+                            type="number"
+                            id="maxDistance"
+                            name="maxDistance"
+                            placeholder="Example: 10"
+                            min="1"
+                            required
+                        >
+
+                        <div class="form-hint">
+                            Enter distance in miles.
+                        </div>
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label for="availability">
+                            Availability
+                        </label>
+
+                        <select
+                            id="availability"
+                            name="availability"
+                            required
+                        >
+                            <option value="">
+                                Select availability
+                            </option>
+
+                            <option value="Anytime">
+                                Anytime
+                            </option>
+
+                            <option value="Weekdays">
+                                Weekdays
+                            </option>
+
+                            <option value="Weekends">
+                                Weekends
+                            </option>
+
+                            <option value="Evenings">
+                                Evenings
+                            </option>
+
+                            <option value="Mornings">
+                                Mornings
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Submit -->
+                <button
+                    type="submit"
+                    id="registerButton"
+                    class="register-button"
+                >
+                    Register &amp; View Pickups
+                </button>
+
+            </form>
+
+
+            <a
+                href="02-login.html"
+                class="back-link"
+            >
+                ← Back to Login
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    const form = document.getElementById("volunteerRegisterForm");
+
+    const errorMessage =
+        document.getElementById("errorMessage");
+
+    const successMessage =
+        document.getElementById("successMessage");
+
+    const registerButton =
+        document.getElementById("registerButton");
+
+
+    /*
+     * Get email passed from the Volunteer
+     * -> New Volunteer selection on login page.
+     */
+    const draftEmail =
+        sessionStorage.getItem("volunteerDraftEmail");
+
+    if (draftEmail) {
+
+        document.getElementById("email").value =
+            draftEmail;
+
+    }
+
+
+    /*
+     * Show error message
+     */
+    function showError(message) {
+
+        errorMessage.textContent = message;
+
+        errorMessage.style.display = "block";
+
+        successMessage.style.display = "none";
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+    }
+
+
+    /*
+     * Show success message
+     */
+    function showSuccess(message) {
+
+        successMessage.textContent = message;
+
+        successMessage.style.display = "block";
+
+        errorMessage.style.display = "none";
+    }
+
+
+    /*
+     * Volunteer Registration
+     */
+    form.addEventListener("submit", async function (event) {
+
+        event.preventDefault();
+
+
+        // Get values
+        const name =
+            document.getElementById("name").value.trim();
+
+        const email =
+            document.getElementById("email").value.trim();
+
+        const password =
+            document.getElementById("password").value;
+
+        const confirmPassword =
+            document.getElementById("confirmPassword").value;
+
+        const phone =
+            document.getElementById("phone").value.trim();
+
+        const vehicle =
+            document.getElementById("vehicle").value;
+
+        const baseAddress =
+            document.getElementById("baseAddress").value.trim();
+
+        const maxDistance =
+            document.getElementById("maxDistance").value;
+
+        const availability =
+            document.getElementById("availability").value;
+
+
+        /*
+         * Basic validation
+         */
+
+        if (
+            !name ||
+            !email ||
+            !password ||
+            !confirmPassword ||
+            !phone ||
+            !vehicle ||
+            !baseAddress ||
+            !maxDistance ||
+            !availability
+        ) {
+
+            showError("Please fill in all the fields.");
+
+            return;
+        }
+
+
+        /*
+         * Password validation
+         */
+
+        if (password.length < 6) {
+
+            showError(
+                "Password must contain at least 6 characters."
+            );
+
+            return;
+        }
+
+
+        /*
+         * Confirm password
+         */
+
+        if (password !== confirmPassword) {
+
+            showError(
+                "Password and confirm password do not match."
+            );
+
+            return;
+        }
+
+
+        /*
+         * Prepare volunteer data
+         */
+
+        const volunteerData = {
+
+            name: name,
+
+            email: email,
+
+            password: password,
+
+            phone: phone,
+
+            vehicle: vehicle,
+
+            baseAddress: baseAddress,
+
+            maxDistance: Number(maxDistance),
+
+            availability: availability
+        };
+
+
+        /*
+         * Disable button while sending
+         */
+
+        registerButton.disabled = true;
+
+        registerButton.textContent =
+            "Registering...";
+
+
+        try {
+
+            /*
+             * Send volunteer details
+             * to Node.js backend.
+             */
+            const response = await fetch(
+                "http://localhost:5000/api/volunteers",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify(volunteerData)
+                }
+            );
+
+
+            /*
+             * Convert response to JSON
+             */
+            const data =
+                await response.json();
+
+
+            /*
+             * Backend returned an error
+             */
+            if (!response.ok) {
+
+                throw new Error(
+                    data.message ||
+                    "Volunteer registration failed."
+                );
+            }
+
+
+            /*
+             * Registration successful
+             */
+
+            console.log(
+                "Volunteer saved in MongoDB:",
+                data
+            );
+
+
+            /*
+             * Save returned volunteer profile
+             * locally for the frontend.
+             */
+            if (data.volunteer) {
+
+                rescueSignInVolunteer(data.volunteer);
+
+
+                /*
+                 * Save logged-in user
+                 */
+                localStorage.setItem(
+                    "loggedInUser",
+                    JSON.stringify({
+
+                        name: data.volunteer.name,
+
+                        email: data.volunteer.email,
+
+                        role: "volunteer"
+
+                    })
+                );
+
+            }
+
+
+            /*
+             * Keep compatibility with
+             * existing Food Connect session system.
+             */
+            if (typeof rescueSetSession === "function") {
+
+                rescueSetSession(
+                    "volunteer",
+                    name
+                );
+
+            }
+
+
+            /*
+             * Remove temporary email
+             */
+            sessionStorage.removeItem(
+                "volunteerDraftEmail"
+            );
+
+
+            /*
+             * Show success
+             */
+            showSuccess(
+                "Volunteer registered successfully! Redirecting..."
+            );
+
+
+            /*
+             * Redirect to Available Pickups
+             */
+            setTimeout(function () {
+
+                window.location.href =
+                    "10-request-pickup.html";
+
+            }, 1000);
+
+
+        } catch (error) {
+
+            console.error(
+                "Registration error:",
+                error
+            );
+
+
+            /*
+             * Display error
+             */
+            showError(
+                error.message ||
+                "Unable to connect to the server."
+            );
+
+
+            /*
+             * Enable button again
+             */
+            registerButton.disabled = false;
+
+            registerButton.textContent =
+                "Register & View Pickups";
+        }
+
+    });
+
+</script>
+
+<script src="enhance.js"></script>
+</body>
+</html>
+
+

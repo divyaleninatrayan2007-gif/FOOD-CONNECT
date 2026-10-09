@@ -1,0 +1,989 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Admin Dashboard - Food Connect</title>
+
+    <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="enhance.css">
+
+    <style>
+
+        .admin-dashboard {
+
+            min-height: 100vh;
+
+            padding: 25px;
+
+        }
+
+
+        .admin-container {
+
+            max-width: 1100px;
+
+            margin: auto;
+
+        }
+
+
+        /* Header */
+
+        .admin-topbar {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 25px;
+
+        }
+
+
+        .admin-brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+        }
+
+
+        .admin-brand-icon {
+
+            font-size: 32px;
+
+        }
+
+
+        .admin-brand h1 {
+
+            margin: 0;
+
+            font-size: 25px;
+
+        }
+
+
+        .admin-brand p {
+
+            margin: 3px 0 0;
+
+            color: #777;
+
+            font-size: 13px;
+
+        }
+
+
+        .logout-button {
+
+            border: none;
+
+            padding: 10px 16px;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            font-weight: 600;
+
+        }
+
+
+        /* Welcome */
+
+        .welcome-card {
+
+            background: white;
+
+            padding: 22px;
+
+            border-radius: 16px;
+
+            margin-bottom: 22px;
+
+            box-shadow:
+                0 5px 20px
+                rgba(0, 0, 0, 0.07);
+
+        }
+
+
+        .welcome-card h2 {
+
+            margin: 0 0 6px;
+
+            font-size: 22px;
+
+        }
+
+
+        .welcome-card p {
+
+            margin: 0;
+
+            color: #666;
+
+        }
+
+
+        /* Statistics */
+
+        .stats-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 16px;
+
+            margin-bottom: 25px;
+
+        }
+
+
+        .stat-card {
+
+            background: white;
+
+            padding: 20px;
+
+            border-radius: 15px;
+
+            box-shadow:
+                0 5px 20px
+                rgba(0, 0, 0, 0.07);
+
+        }
+
+
+        .stat-icon {
+
+            font-size: 28px;
+
+            margin-bottom: 8px;
+
+        }
+
+
+        .stat-number {
+
+            font-size: 28px;
+
+            font-weight: 700;
+
+            margin-bottom: 4px;
+
+        }
+
+
+        .stat-label {
+
+            color: #777;
+
+            font-size: 14px;
+
+        }
+
+
+        /* Management */
+
+        .section-title {
+
+            margin: 25px 0 14px;
+
+            font-size: 20px;
+
+        }
+
+
+        .management-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 18px;
+
+        }
+
+
+        .management-card {
+
+            background: white;
+
+            padding: 22px;
+
+            border-radius: 15px;
+
+            box-shadow:
+                0 5px 20px
+                rgba(0, 0, 0, 0.07);
+
+        }
+
+
+        .management-icon {
+
+            font-size: 34px;
+
+            margin-bottom: 10px;
+
+        }
+
+
+        .management-card h3 {
+
+            margin: 0 0 7px;
+
+        }
+
+
+        .management-card p {
+
+            color: #666;
+
+            font-size: 14px;
+
+            line-height: 1.5;
+
+        }
+
+
+        .view-button {
+
+            border: none;
+
+            padding: 10px 15px;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            font-weight: 600;
+
+            margin-top: 8px;
+
+        }
+
+
+        /* Activity */
+
+        .activity-card {
+
+            background: white;
+
+            padding: 20px;
+
+            border-radius: 15px;
+
+            margin-top: 20px;
+
+            box-shadow:
+                0 5px 20px
+                rgba(0, 0, 0, 0.07);
+
+        }
+
+
+        .activity-item {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            padding: 13px 0;
+
+            border-bottom:
+                1px solid #eee;
+
+            font-size: 14px;
+
+        }
+
+
+        .activity-item:last-child {
+
+            border-bottom: none;
+
+        }
+
+
+        .status {
+
+            font-weight: 600;
+
+        }
+
+
+        .loading {
+
+            color: #777;
+
+            text-align: center;
+
+            padding: 15px;
+
+        }
+
+
+        @media (max-width: 800px) {
+
+            .stats-grid {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .admin-dashboard {
+
+                padding: 15px;
+
+            }
+
+
+            .admin-topbar {
+
+                align-items: flex-start;
+
+                gap: 10px;
+
+            }
+
+
+            .stats-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .management-grid {
+
+                grid-template-columns: 1fr;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="admin-dashboard">
+
+<div class="admin-container">
+
+
+    <!-- ================================= -->
+    <!-- TOP BAR -->
+    <!-- ================================= -->
+
+    <div class="admin-topbar">
+
+        <div class="admin-brand">
+
+            <div class="admin-brand-icon">
+                🛡️
+            </div>
+
+            <div>
+
+                <h1>
+                    Food Connect Admin
+                </h1>
+
+                <p>
+                    Administration Dashboard
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="logout-button"
+            onclick="logoutAdmin()"
+        >
+            Logout
+        </button>
+
+    </div>
+
+
+    <!-- ================================= -->
+    <!-- WELCOME -->
+    <!-- ================================= -->
+
+    <div class="welcome-card">
+
+        <h2 id="welcomeText">
+            Welcome, Admin
+        </h2>
+
+        <p>
+            Monitor and manage the Food Connect
+            food rescue platform.
+        </p>
+
+    </div>
+
+
+    <!-- ================================= -->
+    <!-- STATISTICS -->
+    <!-- ================================= -->
+
+    <h2 class="section-title">
+        Platform Overview
+    </h2>
+
+
+    <div class="stats-grid">
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                👥
+            </div>
+
+            <div
+                class="stat-number"
+                id="volunteerCount"
+            >
+                -
+            </div>
+
+            <div class="stat-label">
+                Volunteers
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🍱
+            </div>
+
+            <div
+                class="stat-number"
+                id="donationCount"
+            >
+                -
+            </div>
+
+            <div class="stat-label">
+                Donations
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🏢
+            </div>
+
+            <div
+                class="stat-number"
+                id="requestCount"
+            >
+                -
+            </div>
+
+            <div class="stat-label">
+                Food Requests
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🤝
+            </div>
+
+            <div
+                class="stat-number"
+                id="matchCount"
+            >
+                -
+            </div>
+
+            <div class="stat-label">
+                Successful Matches
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- ================================= -->
+    <!-- MANAGEMENT -->
+    <!-- ================================= -->
+
+    <h2 class="section-title">
+        Manage Food Connect
+    </h2>
+
+
+    <div class="management-grid">
+
+
+        <!-- Volunteers -->
+
+        <div class="management-card">
+
+            <div class="management-icon">
+                👥
+            </div>
+
+            <h3>
+                Volunteers
+            </h3>
+
+            <p>
+                View registered volunteers,
+                vehicles, availability and
+                contact information.
+            </p>
+
+            <button
+                class="view-button"
+                onclick="viewVolunteers()"
+            >
+                View Volunteers
+            </button>
+
+        </div>
+
+
+        <!-- Donations -->
+
+        <div class="management-card">
+
+            <div class="management-icon">
+                🍱
+            </div>
+
+            <h3>
+                Donations
+            </h3>
+
+            <p>
+                Monitor food donations and
+                their current status.
+            </p>
+
+            <button
+                class="view-button"
+                onclick="viewDonations()"
+            >
+                View Donations
+            </button>
+
+        </div>
+
+
+        <!-- NGOs -->
+
+        <div class="management-card">
+
+            <div class="management-icon">
+                🏢
+            </div>
+
+            <h3>
+                NGO Requests
+            </h3>
+
+            <p>
+                Monitor NGO food requirements,
+                urgency and request status.
+            </p>
+
+            <button
+                class="view-button"
+                onclick="viewRequests()"
+            >
+                View Requests
+            </button>
+
+        </div>
+
+
+        <!-- Matching -->
+
+        <div class="management-card">
+
+            <div class="management-icon">
+                🤝
+            </div>
+
+            <h3>
+                Smart Matching
+            </h3>
+
+            <p>
+                Monitor AI-based food matching
+                between donations and NGO requests.
+            </p>
+
+            <button
+                class="view-button"
+                onclick="viewMatches()"
+            >
+                View Matches
+            </button>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- ================================= -->
+    <!-- RECENT ACTIVITY -->
+    <!-- ================================= -->
+
+    <h2 class="section-title">
+        Recent Activity
+    </h2>
+
+
+    <div class="activity-card">
+
+        <div
+            id="activityList"
+            class="loading"
+        >
+            Loading platform activity...
+        </div>
+
+    </div>
+
+
+</div>
+
+</div>
+
+
+<script>
+
+
+// ==========================================
+// CHECK ADMIN LOGIN
+// ==========================================
+
+const adminData =
+    localStorage.getItem("adminUser");
+
+
+if (!adminData) {
+
+    window.location.href =
+        "17-admin-login.html";
+
+}
+
+
+let admin = null;
+
+
+try {
+
+    admin =
+        JSON.parse(adminData);
+
+} catch (error) {
+
+    localStorage.removeItem(
+        "adminUser"
+    );
+
+    window.location.href =
+        "17-admin-login.html";
+
+}
+
+
+// ==========================================
+// SHOW ADMIN NAME
+// ==========================================
+
+if (admin) {
+
+    document.getElementById(
+        "welcomeText"
+    ).textContent =
+        "Welcome, " +
+        (admin.name || "Admin");
+
+}
+
+
+// ==========================================
+// LOAD DASHBOARD
+// ==========================================
+
+async function loadDashboard() {
+
+    try {
+
+        const response =
+            await fetch(
+                "http://localhost:5000/api/admin/dashboard"
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Dashboard API not available"
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (data.success) {
+
+            document.getElementById(
+                "volunteerCount"
+            ).textContent =
+                data.statistics.volunteers;
+
+
+            document.getElementById(
+                "donationCount"
+            ).textContent =
+                data.statistics.donations;
+
+
+            document.getElementById(
+                "requestCount"
+            ).textContent =
+                data.statistics.requests;
+
+
+            document.getElementById(
+                "matchCount"
+            ).textContent =
+                data.statistics.matches;
+
+
+            loadActivity(
+                data.recentActivity
+            );
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Dashboard Error:",
+            error
+        );
+
+
+        // Temporary values until
+        // dashboard API is connected.
+
+        document.getElementById(
+            "volunteerCount"
+        ).textContent = "0";
+
+
+        document.getElementById(
+            "donationCount"
+        ).textContent = "0";
+
+
+        document.getElementById(
+            "requestCount"
+        ).textContent = "0";
+
+
+        document.getElementById(
+            "matchCount"
+        ).textContent = "0";
+
+
+        document.getElementById(
+            "activityList"
+        ).innerHTML =
+            "Dashboard data will appear here.";
+
+    }
+
+}
+
+
+// ==========================================
+// ACTIVITY
+// ==========================================
+
+function loadActivity(activity) {
+
+    const container =
+        document.getElementById(
+            "activityList"
+        );
+
+
+    if (
+        !activity ||
+        activity.length === 0
+    ) {
+
+        container.innerHTML =
+            "No recent activity.";
+
+        return;
+
+    }
+
+
+    container.innerHTML = "";
+
+
+    activity.forEach(
+        function(item) {
+
+            const row =
+                document.createElement(
+                    "div"
+                );
+
+
+            row.className =
+                "activity-item";
+
+
+            row.innerHTML = `
+
+                <span>
+                    ${item.message}
+                </span>
+
+                <span class="status">
+                    ${item.status || ""}
+                </span>
+
+            `;
+
+
+            container.appendChild(row);
+
+        }
+    );
+
+}
+
+
+// ==========================================
+// MANAGEMENT BUTTONS
+// ==========================================
+
+function viewVolunteers() {
+
+    window.location.href =
+        "19-admin-volunteers.html";
+
+}
+
+
+function viewDonations() {
+
+    window.location.href =
+        "20-admin-donations.html";
+
+}
+
+function viewRequests() {
+
+    window.location.href =
+        "21-admin-requests.html";
+
+}
+
+
+function viewMatches() {
+
+    window.location.href =
+        "22-admin-matches.html";
+
+}
+
+
+// ==========================================
+// LOGOUT
+// ==========================================
+
+function logoutAdmin() {
+
+    localStorage.removeItem(
+        "adminUser"
+    );
+
+    localStorage.removeItem(
+        "loggedInUser"
+    );
+
+
+    window.location.href =
+        "17-admin-login.html";
+
+}
+
+
+// ==========================================
+// START
+// ==========================================
+
+loadDashboard();
+
+</script>
+
+
+<script src="enhance.js"></script>
+</body>
+
+</html>
+

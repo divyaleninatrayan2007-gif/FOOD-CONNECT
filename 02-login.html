@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Food Connect - Login</title>
+
+    <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="enhance.css">
+
+    <script src="access.js"></script>
+
+</head>
+
+
+<body>
+
+<div class="phone">
+
+    <div class="screen">
+
+        <div class="content">
+
+
+            <!-- =========================
+                 HEADER
+            ========================== -->
+
+            <div class="auth-banner">
+
+                <div class="brand">
+
+                    <span class="check">
+                        ✓
+                    </span>
+
+                    Food Connect
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =========================
+                 LOGIN CARD
+            ========================== -->
+
+            <div class="auth-card">
+
+
+                <div class="form-title">
+                    Welcome back
+                </div>
+
+
+                <div class="form-subtitle">
+                    Log in to continue your mission against food waste.
+                </div>
+
+
+
+                <!-- =========================
+                     LOGIN TYPE
+                ========================== -->
+
+                <div class="field">
+
+                    <label>
+                        Login As
+                    </label>
+
+                    <select id="loginType">
+
+                        <option value="donor">
+                            Donor
+                        </option>
+
+                        <option value="volunteer">
+                            Volunteer
+                        </option>
+
+                        <option value="ngo">
+                            NGO
+                        </option>
+
+                    </select>
+
+                    <div style="font-size:10px; color:#999; margin-top:6px; line-height:1.5;">
+                        Donor / Volunteer / NGO must match the role you signed up with.
+                    </div>
+
+                </div>
+
+
+
+                <!-- =========================
+                     NGO — NEW OR EXISTING?
+                     Only shown once "NGO" is chosen above.
+                ========================== -->
+
+                <div class="field" id="ngoStatusField" style="display:none;">
+
+                    <label>
+                        Is your NGO new to Food Connect?
+                    </label>
+
+                    <div class="ngo-status-row" id="ngoStatusRow">
+
+                        <div class="ngo-status-chip" data-status="new">
+                            <span class="ric">🆕</span>
+                            New NGO
+                            <small>Register your organization</small>
+                        </div>
+
+                        <div class="ngo-status-chip" data-status="existing">
+                            <span class="ric">🏛️</span>
+                            Existing NGO
+                            <small>I already have an account</small>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =========================
+                     VOLUNTEER — NEW OR EXISTING?
+                     Only shown once "Volunteer" is chosen above.
+                ========================== -->
+
+                <div class="field" id="volunteerStatusField" style="display:none;">
+
+                    <label>
+                        Are you new or an existing volunteer?
+                    </label>
+
+                    <div class="ngo-status-row" id="volunteerStatusRow">
+
+                        <div class="ngo-status-chip" data-status="new">
+                            <span class="ric">🆕</span>
+                            New Volunteer
+                            <small>Create your volunteer profile</small>
+                        </div>
+
+                        <div class="ngo-status-chip" data-status="existing">
+                            <span class="ric">🚗</span>
+                            Existing Volunteer
+                            <small>I already have an account</small>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =========================
+                     EMAIL
+                ========================== -->
+
+                <div class="field">
+
+                    <label id="loginEmailLabel">
+                        Email Address
+                    </label>
+
+                    <input
+                        type="email"
+                        id="loginEmail"
+                        placeholder="sarah@example.com"
+                    >
+
+                </div>
+
+
+
+                <!-- =========================
+                     PASSWORD
+                ========================== -->
+
+                <div class="field" id="loginPasswordField">
+
+                    <label>
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="loginPassword"
+                        placeholder="••••••••"
+                    >
+
+                </div>
+
+
+
+                <!-- =========================
+                     FORGOT PASSWORD
+                ========================== -->
+
+                <a
+                    href="#"
+                    class="forgot-link"
+                    id="forgotLink"
+                >
+                    Forgot password?
+                </a>
+
+
+
+                <!-- =========================
+                     LOGIN BUTTON
+                ========================== -->
+
+                <button
+                    type="button"
+                    class="btn-primary"
+                    style="width:100%;"
+                    onclick="loginUser()"
+                    id="loginSubmitBtn"
+                >
+                    Log In
+                </button>
+
+
+
+                <!-- =========================
+                     SOCIAL LOGIN
+                ========================== -->
+<!-- =========================
+                     SIGN UP
+                ========================== -->
+
+                <div class="link-row">
+
+                    Don't have an account?
+
+                    <a href="03-signup.html">
+                        Sign Up
+                    </a>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================
+     LOGIN JAVASCRIPT
+========================= -->
+
+<script>
+
+/* =========================================================
+   NGO — NEW / EXISTING TOGGLE
+   Shown only when "NGO" is selected in the Login As dropdown.
+   Selecting "New NGO" swaps this screen into a lightweight
+   entry step that hands off to the NGO Registration page —
+   selecting "Existing NGO" keeps the normal email + password
+   login and routes straight into the NGO's Request Food flow.
+========================================================= */
+
+let ngoStatus = null;
+let volunteerStatus = null;
+
+const loginTypeSelect   = document.getElementById("loginType");
+const ngoStatusField    = document.getElementById("ngoStatusField");
+const ngoStatusRow      = document.getElementById("ngoStatusRow");
+const volunteerStatusField = document.getElementById("volunteerStatusField");
+const volunteerStatusRow   = document.getElementById("volunteerStatusRow");
+const loginEmailLabel   = document.getElementById("loginEmailLabel");
+const loginPasswordField= document.getElementById("loginPasswordField");
+const forgotLink        = document.getElementById("forgotLink");
+const loginSubmitBtn    = document.getElementById("loginSubmitBtn");
+const socialDivider     = document.getElementById("socialDivider");
+const socialRow         = document.getElementById("socialRow");
+
+function clearStatusSelection(row) {
+    if (!row) return;
+    row.querySelectorAll(".ngo-status-chip").forEach(function (c) {
+        c.classList.remove("selected");
+    });
+}
+
+function applyLoginChoiceUI() {
+
+    const isNgo = loginTypeSelect.value === "ngo";
+    const isVolunteer = loginTypeSelect.value === "volunteer";
+
+    ngoStatusField.style.display =
+        isNgo ? "block" : "none";
+
+    volunteerStatusField.style.display =
+        isVolunteer ? "block" : "none";
+
+    if (!isNgo) {
+        ngoStatus = null;
+        clearStatusSelection(ngoStatusRow);
+    }
+
+    if (!isVolunteer) {
+        volunteerStatus = null;
+        clearStatusSelection(volunteerStatusRow);
+    }
+
+    const newUser =
+        (isNgo && ngoStatus === "new") ||
+        (isVolunteer && volunteerStatus === "new");
+
+    if (newUser) {
+        loginEmailLabel.textContent =
+            isNgo ? "Organization Email" : "Email Address";
+        loginPasswordField.style.display = "none";
+        forgotLink.style.display = "none";
+        loginSubmitBtn.textContent =
+            isNgo
+                ? "Continue to Registration →"
+                : "Continue to Volunteer Registration →";
+    } else {
+        loginEmailLabel.textContent = "Email Address";
+        loginPasswordField.style.display = "block";
+        forgotLink.style.display = "block";
+        loginSubmitBtn.textContent = "Log In";
+    }
+}
+
+loginTypeSelect.addEventListener("change", applyLoginChoiceUI);
+
+ngoStatusRow.querySelectorAll(".ngo-status-chip").forEach(function (chip) {
+    chip.addEventListener("click", function () {
+        clearStatusSelection(ngoStatusRow);
+        chip.classList.add("selected");
+        ngoStatus = chip.getAttribute("data-status");
+        applyLoginChoiceUI();
+    });
+});
+
+volunteerStatusRow.querySelectorAll(".ngo-status-chip").forEach(function (chip) {
+    chip.addEventListener("click", function () {
+        clearStatusSelection(volunteerStatusRow);
+        chip.classList.add("selected");
+        volunteerStatus = chip.getAttribute("data-status");
+        applyLoginChoiceUI();
+    });
+});
+
+applyLoginChoiceUI();
+
+function loginUser() {
+
+
+    const loginType =
+        document.getElementById(
+            "loginType"
+        ).value;
+
+
+    const email =
+        document.getElementById(
+            "loginEmail"
+        ).value.trim();
+
+
+    const password =
+        document.getElementById(
+            "loginPassword"
+        ).value;
+
+
+
+    /* =========================
+       CHECK EMAIL
+    ========================== */
+
+    if (email === "") {
+
+        alert(
+            "Please enter your email address."
+        );
+
+        return;
+    }
+
+
+
+    /* =========================
+       NGO LOGIN — SPLITS INTO
+       NEW NGO  vs  EXISTING NGO
+    ========================== */
+
+    if (loginType === "ngo") {
+
+        if (!ngoStatus) {
+            alert(
+                "Please tell us whether your NGO is new to Food Connect or already has an account."
+            );
+            return;
+        }
+
+
+        /* ---- NEW NGO: hand off to the registration screen ---- */
+
+        if (ngoStatus === "new") {
+
+            sessionStorage.setItem("ngoDraftEmail", email);
+
+            alert(
+                "Welcome! Let's get your organization registered."
+            );
+
+            window.location.href =
+                "12-ngo-register.html";
+
+            return;
+        }
+
+
+        /* ---- EXISTING NGO: falls through to the normal login
+               check below, but always lands on the Request Food
+               screen instead of the general Home page. ---- */
+    }
+
+
+
+    /* =========================
+       VOLUNTEER LOGIN — SPLITS INTO
+       NEW VOLUNTEER vs EXISTING VOLUNTEER
+    ========================== */
+
+    if (loginType === "volunteer") {
+
+        if (!volunteerStatus) {
+            alert(
+                "Please choose New Volunteer or Existing Volunteer."
+            );
+            return;
+        }
+
+        /* NEW VOLUNTEER: hand off to dedicated registration */
+        if (volunteerStatus === "new") {
+
+            sessionStorage.setItem("volunteerDraftEmail", email);
+
+            alert(
+                "Welcome! Let's create your volunteer profile."
+            );
+
+            window.location.href =
+                "16-volunteer-register.html";
+
+            return;
+        }
+        /* EXISTING VOLUNTEER: check the account saved in MongoDB */
+        if (email === "" || password === "") {
+            alert("Please enter your email and password.");
+            return;
+        }
+        fetch("http://localhost:5000/api/volunteers/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: email.trim(), password: password })
+        })
+        .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+        .then(function (res) {
+            if (!res.ok) { alert(res.d.message || "Login failed."); return; }
+            rescueSignInVolunteer(res.d.volunteer);
+            alert("Welcome back, " + res.d.volunteer.name + "! Showing pickups near you.");
+            window.location.href = "10-request-pickup.html";
+        })
+        .catch(function () {
+            alert("Cannot reach the Food Connect server. Start the backend (node server.js) and try again.");
+        });
+        return;
+
+    }
+
+
+    if (password === "") {
+
+        alert(
+            "Please enter your password."
+        );
+
+        return;
+    }
+
+
+
+    /* =========================
+       USER LOGIN (Donor / Volunteer / Existing NGO)
+    ========================== */
+
+    const savedUser =
+        JSON.parse(
+            localStorage.getItem(
+                "rescueUser"
+            )
+        );
+
+
+
+    /* No account */
+
+    if (!savedUser) {
+
+        if (loginType === "ngo") {
+            alert(
+                "No NGO account found yet. Choose \"New NGO\" above to register your organization."
+            );
+        } else {
+            alert(
+                "No account found. Please sign up first as a " +
+                loginType.charAt(0).toUpperCase() + loginType.slice(1) +
+                "."
+            );
+        }
+
+        return;
+    }
+
+
+
+    /* Check email */
+
+    if (
+        email !== savedUser.email
+    ) {
+
+        alert(
+            "Email address is incorrect."
+        );
+
+        return;
+    }
+
+
+
+    /* Check password */
+
+    if (
+        password !== savedUser.password
+    ) {
+
+        alert(
+            "Password is incorrect."
+        );
+
+        return;
+    }
+
+
+
+    /* =========================
+       CHECK ROLE MATCH
+    ========================== */
+
+    const accountRole =
+        savedUser.role || "donor";
+
+    if (loginType !== accountRole) {
+
+        alert(
+            "This account is registered as " +
+            accountRole.charAt(0).toUpperCase() + accountRole.slice(1) +
+            ", not " +
+            loginType.charAt(0).toUpperCase() + loginType.slice(1) +
+            ". Please choose the correct role, or sign up separately for a " +
+            loginType.charAt(0).toUpperCase() + loginType.slice(1) +
+            " account."
+        );
+
+        return;
+    }
+
+
+
+    /* =========================
+       LOGIN SUCCESS
+    ========================== */
+
+    localStorage.setItem(
+        "loggedInUser",
+        JSON.stringify(savedUser)
+    );
+
+    rescueSetSession(
+        savedUser.role || "donor",
+        savedUser.name
+    );
+
+
+    /* NGOs skip the general Home screen and go straight into
+       their own workflow: reviewing / submitting a food request. */
+
+    if (accountRole === "ngo") {
+
+        alert(
+            "Welcome back! Taking you to your NGO's food request."
+        );
+
+        window.location.href =
+            "13-ngo-request-food.html";
+
+        return;
+    }
+
+
+    /* Volunteers skip the general Home screen too — first-timers
+       are sent to set up their pickup profile (base address, vehicle,
+       travel radius); returning volunteers go straight to the list
+       of nearby available pickups. */
+
+    if (accountRole === "volunteer") {
+
+        const hasVolunteerProfile =
+            !!localStorage.getItem("volunteerProfile");
+
+        if (hasVolunteerProfile) {
+
+            alert(
+                "Welcome back! Showing pickups near you."
+            );
+
+            window.location.href =
+                "10-request-pickup.html";
+
+        } else {
+
+            alert(
+                "Welcome! Let's set up your volunteer profile first."
+            );
+
+            window.location.href =
+                "15-volunteer-profile.html";
+
+        }
+
+        return;
+    }
+
+
+    alert(
+        "Login successful! You're signed in as a " +
+        (savedUser.role || "donor") + "."
+    );
+
+
+    /* Donors skip the general Home screen too — they came here
+       to give food away, so drop them straight into the Donate
+       flow instead of an extra tap through Home. */
+
+    if (accountRole === "donor") {
+
+        window.location.href =
+            "05-donate.html";
+
+        return;
+    }
+
+
+    /* =========================
+       OPEN HOME PAGE
+       (fallback for any role without its own dedicated
+       landing screen, e.g. a future Admin role)
+    ========================== */
+
+    window.location.href =
+        "04-home.html";
+
+}
+
+</script>
+
+
+<script src="enhance.js"></script>
+</body>
+
+</html>
